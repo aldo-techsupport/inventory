@@ -39,11 +39,7 @@
     </div>
 <!-- Datatables Jquery -->
 <script>
-$(document).ready(function() {
-
-    let table = $('#table_id').DataTable({
-        paging: true
-    });
+    var table;
 
     function loadData() {
         $.ajax({
@@ -133,9 +129,15 @@ $(document).ready(function() {
     }
 
     // INIT
-    loadData();
+    $(document).ready(function() {
+        $.fn.dataTable.ext.errMode = 'none';
 
-});
+        table = $('#table_id').DataTable({
+            paging: true
+        });
+
+        loadData();
+    });
 </script>
    <!-- Show Modal Tambah barang -->
 <script>
@@ -215,11 +217,7 @@ $(document).ready(function() {
                     .text('Tambah');
 
                 // ================= RELOAD DATA =================
-                if ($.fn.DataTable.isDataTable('#table_id')) {
-                    $('#table_id').DataTable().ajax.reload(null, false);
-                } else {
-                    location.reload();
-                }
+                loadData();
             },
 
             error: function (xhr) {
@@ -303,7 +301,7 @@ $(document).on('click', '#button_detail_barang', function () {
 
             // ================= RELASI =================
             $('#detail_jenis').text(data.jenis?.jenis_barang ?? '-');
-            $('#detail_satuan').text(data.satuan?.satuan ?? '-');
+            $('#detail_satuan').text(data.satuan?.satuan_barang ?? '-');
 
             // ================= IMAGE =================
             let images = [];

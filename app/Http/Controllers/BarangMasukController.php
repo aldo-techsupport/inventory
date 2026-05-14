@@ -35,7 +35,7 @@ class BarangMasukController extends Controller
     {
         $request->validate([
             'tanggal_masuk' => 'required|date',
-            'barang_id'     => 'required|exists:barangs,id',
+            'barang_id'     => 'required|exists:barang,id',
             'jumlah_masuk'  => 'required|numeric|min:1',
             'supplier_id'   => 'required|exists:suppliers,id'
         ]);
@@ -93,7 +93,7 @@ class BarangMasukController extends Controller
 
         return response()->json([
             'stok'   => $barang->stok ?? 0,
-            'satuan' => $barang->satuan->satuan ?? '-' // 🔥 pastikan selalu ada
+            'satuan' => $barang->satuan->satuan_barang ?? '-' // kolom yang benar
         ]);
     }
 

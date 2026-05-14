@@ -53,8 +53,8 @@ class SatuanController extends Controller
         }
 
         $satuan = Satuan::create([
-            'satuan'  => $request->satuan,
-            'user_id' => auth()->id() // 🔥 WAJIB pakai ini
+            'satuan_barang' => $request->satuan,
+            'user_id'       => auth()->id()
         ]);
 
         return response()->json([
@@ -109,8 +109,8 @@ class SatuanController extends Controller
         }
 
         $satuan->update([
-            'satuan'    => $request->satuan,
-            'user_id'   => auth()->user()->id
+            'satuan_barang' => $request->satuan,
+            'user_id'       => auth()->user()->id
         ]);
 
         return response()->json([

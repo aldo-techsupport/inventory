@@ -48,15 +48,39 @@
                 <div class="form-group">
                   <label>Customer</label>
                   <select class="form-control" name="customer_id" id="customer_id">
+                    <option value="">-- Pilih Customer --</option>
                     @foreach ($customers as $customer)
-                        @if (old('customer_id') == $customer->id)
-                          <option value="{{ $customer->id }}" selected>{{ $customer->customer}}</option>
-                        @else
-                          <option value="{{ $customer->id }}">{{ $customer->customer}}</option>
-                        @endif
+                        <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                            {{ $customer->customer }}
+                        </option>
                     @endforeach
+                    <option value="other">+ Tambah Customer Baru</option>
                   </select>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-customer_id"></div>
+                </div>
+
+                {{-- Field tambah customer baru, muncul saat pilih "other" --}}
+                <div id="form_customer_baru" style="display: none;">
+                  <div class="form-group">
+                    <label>Nama Perusahaan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="new_customer_nama" placeholder="Nama perusahaan">
+                    <div class="alert alert-danger mt-1 d-none" id="alert-new_customer_nama"></div>
+                  </div>
+                  <div class="form-group">
+                    <label>Alamat <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="new_customer_alamat" rows="2" placeholder="Alamat"></textarea>
+                    <div class="alert alert-danger mt-1 d-none" id="alert-new_customer_alamat"></div>
+                  </div>
+                  <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea class="form-control" id="new_customer_deskripsi" rows="2" placeholder="Deskripsi (opsional)"></textarea>
+                  </div>
+                  <button type="button" class="btn btn-success btn-sm mb-2" id="btn_simpan_customer_baru">
+                    <i class="fas fa-save"></i> Simpan Customer
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm mb-2" id="btn_batal_customer_baru">
+                    Batal
+                  </button>
                 </div>
 
                 <div class="form-group">
@@ -82,8 +106,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-

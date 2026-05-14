@@ -52,13 +52,15 @@ class BarangKeluarController extends Controller
         $validator = Validator::make($request->all(), [
             'tanggal_keluar' => 'required',
             'nama_barang'    => 'required',
-            'customer_id'    => 'required',
+            'customer_id'    => 'required|integer|exists:customers,id',
             'jumlah_keluar'  => 'required|numeric|min:1',
         ], [
             'tanggal_keluar.required' => 'Tanggal wajib diisi!',
             'nama_barang.required'    => 'Nama barang wajib diisi!',
             'jumlah_keluar.required'  => 'Jumlah wajib diisi!',
-            'customer_id.required'    => 'Pilih customer!'
+            'customer_id.required'    => 'Pilih customer!',
+            'customer_id.integer'     => 'Customer tidak valid!',
+            'customer_id.exists'      => 'Customer tidak ditemukan!'
         ]);
 
         if ($validator->fails()) {

@@ -39,36 +39,38 @@
     <!-- Datatables Jquery -->
     <script>
         $(document).ready(function() {
-            $('#table_id').DataTable({
-                paging: true
-            });
-            $.ajax({
-                url: "/data-pengguna/get-data",
-                type: "GET",
-                dataType: 'JSON',
-                success: function(response) {
-                    let counter = 1;
-                    if ($.fn.DataTable.isDataTable('#table_id')) {
-                        $('#table_id').DataTable().destroy();
+            let table = $('#table_id').DataTable({ paging: true });
+
+            function loadPengguna() {
+                $.ajax({
+                    url: "/data-pengguna/get-data",
+                    type: "GET",
+                    dataType: 'JSON',
+                    success: function(response) {
+                        let counter = 1;
+                        table.clear();
+                        $.each(response.data, function(key, value) {
+                            let roleName = value.role ? value.role.role : '-';
+                            let pengguna = `
+                            <tr class="pengguna-row" id="index_${value.id}">
+                                <td>${counter++}</td>
+                                <td>${value.name}</td>
+                                <td>${value.email}</td>
+                                <td>${roleName}</td>
+                                <td>
+                                    <a href="javascript:void(0)" id="button_edit_pengguna" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                    <a href="javascript:void(0)" id="button_hapus_pengguna" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                </td>
+                            </tr>
+                            `;
+                            table.row.add($(pengguna)).draw(false);
+                        });
                     }
-                    $('#table_id').DataTable().clear();
-                    $.each(response.data, function(key, value) {
-                        let pengguna = `
-                        <tr class="pengguna-row" id="index_${value.id}">
-                            <td>${counter++}</td>
-                            <td>${value.name}</td>
-                            <td>${value.email}</td>
-                            <td>${value.role.role}</td>
-                            <td>
-                                <a href="javascript:void(0)" id="button_edit_pengguna" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                <a href="javascript:void(0)" id="button_hapus_pengguna" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                            </td>
-                        </tr>
-                        `;
-                        $('#table_id').DataTable().row.add($(pengguna)).draw(false);
-                    });
-                }
-            });
+                });
+            }
+
+            loadPengguna();
+            window.reloadPengguna = loadPengguna;
         });
     </script>
 
@@ -111,60 +113,13 @@
                         timer: 3000
                     });
 
-                    $.ajax({
-                        url: '/data-pengguna/get-data',
-                        type: "GET",
-                        dataType: 'JSON',
-                        cache: false,
-                        success: function(response) {
-                            $('#table-pengguna').html(
-                                ''); // kosongkan tabel terlebih dahulu
+                    $('#name').val('');
+                    $('#email').val('');
+                    $('#password').val('');
+                    $('#role_id').val('');
+                    $('#modal_tambah_pengguna').modal('hide');
 
-                            let counter = 1;
-                            $('#table_id').DataTable().clear();
-                            $.each(response.data, function(key, value) {
-                                getRoleName(value.role_id, function(role) {
-                                    let pengguna = `
-                            <tr class="pengguna-row" id="index_${value.id}">
-                                <td>${counter++}</td>
-                                <td>${value.name}</td>
-                                <td>${value.email}</td>
-                                <td>${role}</td>
-                                <td>
-                                    <a href="javascript:void(0)" id="button_edit_pengguna" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                    <a href="javascript:void(0)" id="button_hapus_pengguna" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                </td>
-                            </tr>
-                            `;
-                                    $('#table_id').DataTable().row.add($(
-                                        pengguna)).draw(false);
-                                });
-                            });
-
-                            $('#name').val('');
-                            $('#email').val('');
-                            $('#password').val('');
-                            $('#role_id').val('');
-
-                            $('#modal_tambah_pengguna').modal('hide');
-
-                            let table = $('#table_id').DataTable();
-                            table.draw(); // memperbarui Datatables
-
-                            function getRoleName(roleId, callback) {
-                                $.getJSON('{{ url('api/role') }}', function(roles) {
-                                    var role = roles.find(function(s) {
-                                        return s.id === roleId;
-                                    });
-                                    callback(role ? role.role : '');
-                                });
-                            }
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-
+                    if (window.reloadPengguna) window.reloadPengguna();
                 },
 
                 error: function(error) {
@@ -267,59 +222,8 @@
                         timer: 3000
                     });
 
-                    $.ajax({
-                        url: '/data-pengguna/get-data',
-                        type: "GET",
-                        dataType: 'JSON',
-                        cache: false,
-                        success: function(response) {
-                            $('#table-pengguna').html(
-                                ''); // kosongkan tabel terlebih dahulu
-
-                            let counter = 1;
-                            $('#table_id').DataTable().clear();
-                            $.each(response.data, function(key, value) {
-                                getRoleName(value.role_id, function(role) {
-                                    let pengguna = `
-                                <tr class="pengguna-row" id="index_${value.id}">
-                                    <td>${counter++}</td>
-                                    <td>${value.name}</td>
-                                    <td>${value.email}</td>
-                                    <td>${role}</td>
-                                    <td>
-                                        <a href="javascript:void(0)" id="button_edit_pengguna" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                        <a href="javascript:void(0)" id="button_hapus_pengguna" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                    </td>
-                                </tr>
-                                `;
-                                    $('#table_id').DataTable().row.add($(
-                                        pengguna)).draw(false);
-                                });
-                            });
-
-                            $('#name').val('');
-                            $('#email').val('');
-                            $('#password').val('');
-                            $('#role_id').val('');
-
-                            $('#modal_edit_pengguna').modal('hide');
-
-                            let table = $('#table_id').DataTable();
-                            table.draw(); // memperbarui Datatables
-
-                            function getRoleName(roleId, callback) {
-                                $.getJSON('{{ url('api/role') }}', function(roles) {
-                                    var role = roles.find(function(s) {
-                                        return s.id === roleId;
-                                    });
-                                    callback(role ? role.role : '');
-                                });
-                            }
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
+                    $('#modal_edit_pengguna').modal('hide');
+                    if (window.reloadPengguna) window.reloadPengguna();
                 },
 
                 error: function(error) {
@@ -379,53 +283,8 @@
                                 showConfirmButton: true,
                                 timer: 3000
                             });
-                            $(`#index_${pengguna_id}`).remove();
 
-                            $.ajax({
-                                url: "/data-pengguna/get-data",
-                                type: "GET",
-                                dataType: 'JSON',
-                                success: function(response) {
-                                    let counter = 1;
-                                    if ($.fn.DataTable.isDataTable('#table_id')) {
-                                        $('#table_id').DataTable().destroy();
-                                    }
-                                    $('#table_id').DataTable().clear();
-                                    $.each(response.data, function(key, value) {
-                                        getRoleName(value.role_id, function(
-                                            role) {
-                                            let pengguna = `
-                                        <tr class="pengguna-row" id="index_${value.id}">
-                                            <td>${counter++}</td>
-                                            <td>${value.name}</td>
-                                            <td>${value.email}</td>
-                                            <td>${role}</td>
-                                            <td>
-                                                <a href="javascript:void(0)" id="button_edit_pengguna" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                                <a href="javascript:void(0)" id="button_hapus_pengguna" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                            </td>
-                                        </tr>
-                                        `;
-                                            $('#table_id')
-                                                .DataTable().row
-                                                .add($(pengguna))
-                                                .draw(false);
-                                        });
-                                    });
-
-                                    function getRoleName(roleId, callback) {
-                                        $.getJSON('{{ url('api/role') }}', function(
-                                            roles) {
-                                            var role = roles.find(function(
-                                                s) {
-                                                return s.id ===
-                                                    roleId;
-                                            });
-                                            callback(role ? role.role : '');
-                                        });
-                                    }
-                                }
-                            });
+                            if (window.reloadPengguna) window.reloadPengguna();
                         }
                     })
                 }

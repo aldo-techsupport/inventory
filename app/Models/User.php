@@ -49,4 +49,36 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    /**
+     * Cek apakah user adalah superadmin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role?->role === 'superadmin';
+    }
+
+    /**
+     * Cek apakah user boleh melihat menu tertentu
+     * Superadmin selalu bisa akses semua menu
+     */
+    public function canViewMenu(string $menuKey): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        return $this->role?->canView($menuKey) ?? false;
+    }
+
+    /**
+     * Cek apakah user boleh tambah/edit/hapus di menu tertentu
+     * Superadmin selalu bisa
+     */
+    public function canAddMenu(string $menuKey): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        return $this->role?->canAdd($menuKey) ?? false;
+    }
 }

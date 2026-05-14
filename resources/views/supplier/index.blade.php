@@ -38,36 +38,37 @@
     <!-- Datatables Jquery -->
     <script>
         $(document).ready(function() {
-            $('#table_id').DataTable();
+            let table = $('#table_id').DataTable({ paging: true });
 
-            $.ajax({
-                url: "/supplier/get-data",
-                type: "GET",
-                dataType: 'JSON',
-                success: function(response) {
-                    let counter = 1;
-                    if ($.fn.DataTable.isDataTable('#table_id')) {
-                        $('#table_id').DataTable().destroy();
+            function loadSupplier() {
+                $.ajax({
+                    url: "/supplier/get-data",
+                    type: "GET",
+                    dataType: 'JSON',
+                    success: function(response) {
+                        let counter = 1;
+                        table.clear();
+                        $.each(response.data, function(key, value) {
+                            let supplier = `
+                    <tr class="barang-row" id="index_${value.id}">
+                        <td>${counter++}</td>
+                        <td>${value.supplier}</td>
+                        <td>${value.alamat}</td>
+                        <td>${value.deskripsi ?? '-'}</td>
+                        <td>
+                            <a href="javascript:void(0)" id="button_edit_supplier" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                            <a href="javascript:void(0)" id="button_hapus_supplier" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                        </td>
+                    </tr>
+                `;
+                            table.row.add($(supplier)).draw(false);
+                        });
                     }
+                });
+            }
 
-                    $('#table_id').DataTable().clear();
-                    $.each(response.data, function(key, value) {
-                        let supplier = `
-                <tr class="barang-row" id="index_${value.id}">
-                    <td>${counter++}</td>
-                    <td>${value.supplier}</td>
-                    <td>${value.alamat}</td>
-                    <td>${value.deskripsi ?? '-'}</td>
-                    <td>
-                        <a href="javascript:void(0)" id="button_edit_supplier" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                        <a href="javascript:void(0)" id="button_hapus_supplier" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                    </td>
-                </tr>
-            `;
-                        $('#table_id').DataTable().row.add($(supplier)).draw(false);
-                    });
-                }
-            });
+            loadSupplier();
+            window.reloadSupplier = loadSupplier;
         });
     </script>
 
@@ -325,37 +326,8 @@ $(document).off('click', '#update_supplier').on('click', '#update_supplier', fun
                                 showConfirmButton: true,
                                 timer: 3000
                             });
-                            $(`#index_${supplier_id}`).remove();
 
-                            $.ajax({
-                                url: "/supplier/get-data",
-                                type: "GET",
-                                dataType: 'JSON',
-                                success: function(response) {
-                                    let counter = 1;
-                                    if ($.fn.DataTable.isDataTable('#table_id')) {
-                                        $('#table_id').DataTable().destroy();
-                                    }
-
-                                    $('#table_id').DataTable().clear();
-                                    $.each(response.data, function(key, value) {
-                                        let supplier = `
-                                        <tr class="barang-row" id="index_${value.id}">
-                                            <td>${counter++}</td>
-                                            <td>${value.supplier}</td>
-                                            <td>${value.alamat}</td>
-                                            <td>${value.deskripsi ?? '-'}</td>
-                                            <td>
-                                                <a href="javascript:void(0)" id="button_edit_supplier" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                                <a href="javascript:void(0)" id="button_hapus_supplier" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                            </td>
-                                        </tr>
-                                    `;
-                                        $('#table_id').DataTable().row.add(
-                                            $(supplier)).draw(false);
-                                    });
-                                }
-                            });
+                            if (window.reloadSupplier) window.reloadSupplier();
                         }
                     })
                 }

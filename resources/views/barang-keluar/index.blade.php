@@ -76,7 +76,7 @@
             return s.id == satuanId; // 🔥 pakai == biar tidak gagal type mismatch
         });
 
-        callback(satuan ? satuan.satuan : '');
+        callback(satuan ? satuan.satuan_barang : '');
 
     });
 
@@ -101,27 +101,24 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        let customer = getCustomerName(response.customer, value.customer_id);
+                        let customerName = value.customer ? value.customer.customer : '-';
                         let barangKeluar = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>
                     <td>${value.kode_transaksi}</td>
                     <td>${value.tanggal_keluar}</td>
-                   <td>${value.barang?.nama_barang ?? '-'}</td>
+                    <td>${value.barang ? value.barang.nama_barang : '-'}</td>
                     <td>${value.jumlah_keluar}</td>
-                    <td>${customer}</td>
+                    <td>${customerName}</td>
                     <td>
-                        <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                        <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
                     </td>
                 </tr>
             `;
                         $('#table_id').DataTable().row.add($(barangKeluar)).draw(false);
                     });
-
-                    function getCustomerName(customers, customerId) {
-                        let customer = customers.find(s => s.id === customerId);
-                        return customer ? customer.customer : '';
-                    }
                 }
             });
         });
@@ -261,16 +258,16 @@ function loadBarangKeluar() {
 
             $.each(response.data, function (key, value) {
 
-                let customer = response.customer.find(s => s.id === value.customer_id);
+                let customerName = value.customer ? value.customer.customer : '-';
 
                 let row = `
                     <tr id="index_${value.id}">
                         <td>${counter++}</td>
                         <td>${value.kode_transaksi}</td>
                         <td>${value.tanggal_keluar}</td>
-                        <td>${value.barang?.nama_barang ?? '-'}</td>
+                        <td>${value.barang ? value.barang.nama_barang : '-'}</td>
                         <td>${value.jumlah_keluar}</td>
-                        <td>${customer ? customer.customer : ''}</td>
+                        <td>${customerName}</td>
                         <td>
                             <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
                                 Hapus
@@ -329,32 +326,25 @@ function loadBarangKeluar() {
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
-                                        let customer = getCustomerName(
-                                            response.customer, value
-                                            .customer_id);
+                                        let customerName = value.customer ? value.customer.customer : '-';
                                         let barangKeluar = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>
                                             <td>${value.kode_transaksi}</td>
                                             <td>${value.tanggal_keluar}</td>
-                                            <td>${value.barang?.nama_barang ?? '-'}</td>
+                                            <td>${value.barang ? value.barang.nama_barang : '-'}</td>
                                             <td>${value.jumlah_keluar}</td>
-                                            <td>${customer}</td>
+                                            <td>${customerName}</td>
                                             <td>
-                                                <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                                <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
+                                                    <i class="fas fa-trash"></i> Hapus
+                                                </button>
                                             </td>
                                         </tr>
                                     `;
                                         $('#table_id').DataTable().row.add(
                                             $(barangKeluar)).draw(false);
                                     });
-
-                                    function getCustomerName(customers,
-                                    customerId) {
-                                        let customer = customers.find(s => s.id ===
-                                            customerId);
-                                        return customer ? customer.customer : '';
-                                    }
                                 }
                             });
                         }
@@ -379,5 +369,80 @@ function loadBarangKeluar() {
 
         // Mengisi nilai input field dengan tanggal hari ini
         document.getElementById('tanggal_keluar').value = formattedDate;
+    </script>
+
+    <!-- Customer Baru Inline -->
+    <script>
+        $(document).on('change', '#customer_id', function () {
+            if ($(this).val() === 'other') {
+                $('#new_customer_nama').val('');
+                $('#new_customer_alamat').val('');
+                $('#new_customer_deskripsi').val('');
+                $('#alert-new_customer_nama').addClass('d-none').text('');
+                $('#alert-new_customer_alamat').addClass('d-none').text('');
+                $('#form_customer_baru').slideDown(200);
+            } else {
+                $('#form_customer_baru').slideUp(200);
+            }
+        });
+
+        $(document).on('click', '#btn_batal_customer_baru', function () {
+            $('#customer_id').val('');
+            $('#form_customer_baru').slideUp(200);
+        });
+
+        $(document).on('click', '#btn_simpan_customer_baru', function () {
+            let nama      = $('#new_customer_nama').val().trim();
+            let alamat    = $('#new_customer_alamat').val().trim();
+            let deskripsi = $('#new_customer_deskripsi').val().trim();
+
+            $('#alert-new_customer_nama').addClass('d-none').text('');
+            $('#alert-new_customer_alamat').addClass('d-none').text('');
+
+            $.ajax({
+                url: '/customer',
+                type: 'POST',
+                data: {
+                    customer:  nama,
+                    alamat:    alamat,
+                    deskripsi: deskripsi,
+                    _token:    $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function () {
+                    $('#btn_simpan_customer_baru').prop('disabled', true).text('Menyimpan...');
+                },
+                success: function (response) {
+                    $('#btn_simpan_customer_baru').prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Customer');
+
+                    $('<option>', {
+                        value: response.data.id,
+                        text:  response.data.customer
+                    }).insertBefore('#customer_id option[value="other"]');
+
+                    $('#customer_id').val(response.data.id);
+                    $('#form_customer_baru').slideUp(200);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                },
+                error: function (xhr) {
+                    $('#btn_simpan_customer_baru').prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Customer');
+
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON;
+                        if (errors.customer)
+                            $('#alert-new_customer_nama').removeClass('d-none').text(errors.customer[0]);
+                        if (errors.alamat)
+                            $('#alert-new_customer_alamat').removeClass('d-none').text(errors.alamat[0]);
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Gagal menyimpan customer' });
+                    }
+                }
+            });
+        });
     </script>
 @endsection

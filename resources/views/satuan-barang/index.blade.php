@@ -51,7 +51,7 @@
                         let satuan = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>   
-                    <td>${value.satuan}</td>
+                    <td>${value.satuan_barang}</td>
                     <td>
                         <a href="javascript:void(0)" id="button_edit_satuan" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                         <a href="javascript:void(0)" id="button_hapus_satuan" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
@@ -111,7 +111,7 @@
                                 let satuan = `
                                 <tr class="barang-row" id="index_${value.id}">
                                     <td>${counter++}</td>   
-                                    <td>${value.satuan}</td>
+                                    <td>${value.satuan_barang}</td>
                                     <td>
                                         <a href="javascript:void(0)" id="button_edit_satuan" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                                         <a href="javascript:void(0)" id="button_hapus_satuan" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
@@ -159,7 +159,7 @@
                 cache: false,
                 success: function(response) {
                     $('#satuan_id').val(response.data.id);
-                    $('#edit_satuan').val(response.data.satuan);
+                    $('#edit_satuan').val(response.data.satuan_barang);
 
                     $('#modal_edit_satuan').modal('show');
                 }
@@ -198,7 +198,7 @@
 
                     let row = $(`#index_${response.data.id}`);
                     let rowData = row.find('td');
-                    rowData.eq(1).text(response.data.satuan);
+                    rowData.eq(1).text(response.data.satuan_barang);
 
                     $('#modal_edit_satuan').modal('hide');
                 },
@@ -259,7 +259,7 @@
                                         let satuan = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>   
-                                            <td>${value.satuan}</td>
+                                            <td>${value.satuan_barang}</td>
                                             <td>
                                                 <a href="javascript:void(0)" id="button_edit_satuan" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                                                 <a href="javascript:void(0)" id="button_hapus_satuan" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>

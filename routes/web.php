@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('/data-pengguna', ManajemenUserController::class);
 
         Route::get('/hak-akses/get-data', [HakAksesController::class, 'getDataRole']);
+        Route::get('/hak-akses/{id}/permissions', [HakAksesController::class, 'permissions'])->name('hak-akses.permissions');
+        Route::post('/hak-akses/{id}/permissions', [HakAksesController::class, 'savePermissions'])->name('hak-akses.save-permissions');
+        Route::get('/hak-akses/{id}/get-permissions', [HakAksesController::class, 'getPermissions'])->name('hak-akses.get-permissions');
         Route::resource('/hak-akses', HakAksesController::class);
     });
 

@@ -217,7 +217,7 @@ body {
 
     <div class="row">
         <span class="label">Satuan</span>
-        <span class="value">: {{ $item->satuan->satuan ?? '-' }}</span>
+        <span class="value">: {{ $item->satuan->satuan_barang ?? '-' }}</span>
     </div>
 
     <div class="row">

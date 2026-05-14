@@ -53,7 +53,7 @@
                 <label>Satuan</label>
                 <select id="edit_satuan_id" name="satuan_id" class="form-control">
                   @foreach ($satuans as $satuan)
-                  <option value="{{ $satuan->id }}">{{ $satuan->satuan }}</option>
+                  <option value="{{ $satuan->id }}">{{ $satuan->satuan_barang }}</option>
                   @endforeach
                 </select>
               </div>

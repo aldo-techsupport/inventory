@@ -3,12 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\RolePermission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class HakAksesController extends Controller
 {
+    /**
+     * Daftar semua menu yang bisa diatur aksesnya.
+     * Format: 'menu_key' => ['label' => '...', 'group' => '...']
+     */
+    public static function menuList(): array
+    {
+        return [
+            'dashboard'           => ['label' => 'Dashboard',       'group' => 'Umum'],
+            'barang'              => ['label' => 'Nama Barang',      'group' => 'Data Master'],
+            'jenis-barang'        => ['label' => 'Jenis Barang',     'group' => 'Data Master'],
+            'satuan-barang'       => ['label' => 'Satuan Barang',    'group' => 'Data Master'],
+            'supplier'            => ['label' => 'Supplier',         'group' => 'Data Master'],
+            'customer'            => ['label' => 'Customer',         'group' => 'Data Master'],
+            'barang-masuk'        => ['label' => 'Barang Masuk',     'group' => 'Transaksi'],
+            'barang-keluar'       => ['label' => 'Barang Keluar',    'group' => 'Transaksi'],
+            'laporan-stok'        => ['label' => 'Laporan Stok',     'group' => 'Laporan'],
+            'laporan-barang-masuk'  => ['label' => 'Laporan Barang Masuk',  'group' => 'Laporan'],
+            'laporan-barang-keluar' => ['label' => 'Laporan Barang Keluar', 'group' => 'Laporan'],
+            'data-pengguna'       => ['label' => 'Data Pengguna',    'group' => 'Manajemen User'],
+            'hak-akses'           => ['label' => 'Hak Akses / Role', 'group' => 'Manajemen User'],
+            'aktivitas-user'      => ['label' => 'Aktivitas User',   'group' => 'Manajemen User'],
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,8 +46,8 @@ class HakAksesController extends Controller
     {
         $roles = Role::all();
         return response()->json([
-            'success'   => true,
-            'data'      => $roles
+            'success' => true,
+            'data'    => $roles
         ]);
     }
 
@@ -47,7 +72,7 @@ class HakAksesController extends Controller
             'deskripsi.required' => 'Form Deskripsi Wajib Di Isi !'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
@@ -59,7 +84,7 @@ class HakAksesController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Tersimpan',
-            'data'     => $role
+            'data'    => $role
         ]);
     }
 
@@ -79,7 +104,7 @@ class HakAksesController extends Controller
         $role = Role::findOrFail($id);
         return response()->json([
             'success' => true,
-            'message' => 'Edit Data Barang',
+            'message' => 'Edit Data Role',
             'data'    => $role
         ]);
     }
@@ -95,11 +120,11 @@ class HakAksesController extends Controller
             'role'      => 'required',
             'deskripsi' => 'required'
         ], [
-            'role.required'         => 'Form ole Wajib Di Isi !',
-            'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !'
+            'role.required'      => 'Form Role Wajib Di Isi !',
+            'deskripsi.required' => 'Form Deskripsi Wajib Di Isi !'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
@@ -109,9 +134,9 @@ class HakAksesController extends Controller
         ]);
 
         return response()->json([
-            'success'   => true,
-            'message'   => 'Data Berhasil Terupdate',
-            'data'      => $role
+            'success' => true,
+            'message' => 'Data Berhasil Terupdate',
+            'data'    => $role
         ]);
     }
 
@@ -120,10 +145,75 @@ class HakAksesController extends Controller
      */
     public function destroy($id)
     {
-        Role::find($id)->delete($id);
+        Role::find($id)->delete();
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Dihapus!'
+        ]);
+    }
+
+    // =============================================
+    // PERMISSION MANAGEMENT
+    // =============================================
+
+    /**
+     * Tampilkan halaman atur akses (checklist menu) untuk role tertentu
+     */
+    public function permissions($id)
+    {
+        $role = Role::with('permissions')->findOrFail($id);
+        $menuList = self::menuList();
+
+        // Buat map: menu_key => ['can_view' => bool, 'can_add' => bool]
+        $currentPermissions = [];
+        foreach ($role->permissions as $perm) {
+            $currentPermissions[$perm->menu_key] = [
+                'can_view' => $perm->can_view,
+                'can_add'  => $perm->can_add,
+            ];
+        }
+
+        return view('hak-akses.permissions', compact('role', 'menuList', 'currentPermissions'));
+    }
+
+    /**
+     * Simpan/update permission untuk role tertentu
+     */
+    public function savePermissions(Request $request, $id)
+    {
+        $role = Role::findOrFail($id);
+        $menuList = self::menuList();
+
+        foreach (array_keys($menuList) as $menuKey) {
+            $canView = $request->has("permissions.{$menuKey}.can_view");
+            $canAdd  = $request->has("permissions.{$menuKey}.can_add");
+
+            // Jika can_add dicentang, otomatis can_view juga true
+            if ($canAdd) {
+                $canView = true;
+            }
+
+            RolePermission::updateOrCreate(
+                ['role_id' => $role->id, 'menu_key' => $menuKey],
+                ['can_view' => $canView, 'can_add' => $canAdd]
+            );
+        }
+
+        return redirect()->route('hak-akses.index')
+            ->with('success', "Hak akses untuk role '{$role->role}' berhasil disimpan.");
+    }
+
+    /**
+     * API: ambil data permission untuk role (dipakai AJAX)
+     */
+    public function getPermissions($id)
+    {
+        $role = Role::with('permissions')->findOrFail($id);
+        $permissions = $role->permissions->keyBy('menu_key');
+
+        return response()->json([
+            'success' => true,
+            'data'    => $permissions
         ]);
     }
 }
