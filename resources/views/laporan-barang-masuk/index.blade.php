@@ -15,48 +15,47 @@
             <div class="card-body">
                 <form id="filter_form">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-12 col-sm-6 col-md-3">
       <label>Tanggal Mulai</label>
       <input type="date" class="form-control" id="tanggal_mulai">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-12 col-sm-6 col-md-3">
       <label>Tanggal Selesai</label>
       <input type="date" class="form-control" id="tanggal_selesai">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-12 col-sm-6 col-md-3">
       <label>Nama Barang</label>
       <input type="text" class="form-control" id="nama_barang" placeholder="Cari nama barang">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-12 col-sm-6 col-md-3">
       <label>Kode Transaksi</label>
       <input type="text" class="form-control" id="kode_transaksi" placeholder="TRX-xxx">
     </div>
 
-   <div class="col-md-3">
-    <label>Supplier</label>
-    <select class="form-control" id="supplier_id" name="supplier_id">
-        <option value="">-- Semua Supplier --</option>
-        @foreach ($suppliers as $s)
-            <option value="{{ $s->id }}">{{ $s->supplier }}</option>
-        @endforeach
-    </select>
-</div>
+    <div class="col-12 col-sm-6 col-md-3 mt-2">
+      <label>Supplier</label>
+      <select class="form-control" id="supplier_id" name="supplier_id">
+          <option value="">-- Semua Supplier --</option>
+          @foreach ($suppliers as $s)
+              <option value="{{ $s->id }}">{{ $s->supplier }}</option>
+          @endforeach
+      </select>
+    </div>
 
-
-    <div class="col-md-3 mt-2">
+    <div class="col-12 col-sm-6 col-md-3 mt-2">
       <label>Jumlah Min</label>
       <input type="number" class="form-control" id="jumlah_min">
     </div>
 
-    <div class="col-md-3 mt-2">
+    <div class="col-12 col-sm-6 col-md-3 mt-2">
       <label>Jumlah Max</label>
       <input type="number" class="form-control" id="jumlah_max">
     </div>
 
-    <div class="col-md-3 d-flex align-items-end mt-2">
+    <div class="col-12 col-sm-6 col-md-3 mt-2 d-flex align-items-end">
       <button type="submit" class="btn btn-primary mr-2">Filter</button>
       <button type="button" class="btn btn-danger" id="refresh_btn">Reset</button>
     </div>

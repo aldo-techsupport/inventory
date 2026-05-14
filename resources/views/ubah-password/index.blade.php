@@ -6,33 +6,39 @@
     <h1>Ubah Password</h1>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <form action="/ubah-password" method="POST" id="ubahPassword">
-        @method('put')
-        @csrf
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/ubah-password" method="POST" id="ubahPassword">
+                @method('put')
+                @csrf
 
-        <div class="mb-3">
-            <label for="current_password" class="form-label @error('current_password') is-invalid @enderror">Masukkan Password Lama</label>
-            <input type="password" class="form-control" id="current_password" name="current_password" required>
-            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-current_password"></div>
+                <div class="mb-3">
+                    <label for="current_password" class="form-label">Masukkan Password Lama</label>
+                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-current_password"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="passwordNew" class="form-label">Masukkan Password Baru</label>
+                    <input type="password" class="form-control" id="passwordNew" name="passwordNew" required>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-passwordNew"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="konfirmasiPassword" class="form-label">Konfirmasi Password</label>
+                    <input type="password" class="form-control" id="konfirmasiPassword" name="konfirmasiPassword" required>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-konfirmasiPassword"></div>
+                </div>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="submit" class="btn btn-primary">Reset Password</button>
+                </div>
+
+                </form>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="passwordNew" class="form-label @error('passwordNew') is-invalid @enderror">Masukkan password Baru</label>
-            <input type="password" class="form-control" id="passwordNew" name="passwordNew" required>
-            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-passwordNew"></div>
-        </div>
-
-        <div class="mb-3">
-            <label for="konfirmasiPassword" class="form-label @error('konfirmasiPassword') is-invalid @enderror">konfirmasi password</label>
-            <input type="password" class="form-control" id="konfirmasiPassword" name="konfirmasiPassword" required>
-            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-konfirmasiPassword"></div>
-        </div>
-
-        <button type="submit" class="btn btn-primary mb-5 float-end">Reset Password</button>
-
-        </form>
     </div>
 </div>
 

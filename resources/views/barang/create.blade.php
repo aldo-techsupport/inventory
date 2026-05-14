@@ -14,7 +14,7 @@
       <form id="form_tambah_barang" enctype="multipart/form-data" autocomplete="on">
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="form-group">
                 <label style="font-weight:300;">Gambar</label>
                 <input type="file" class="form-control form-control-sm" name="gambar[]" id="gambar" multiple onchange="previewImage()" accept="image/*">
@@ -23,7 +23,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="form-group mb-2">
                 <label style="font-weight:300;">Nama Barang</label>
                 <input type="text" class="form-control form-control-sm paste-enabled" name="nama_barang" id="nama_barang" placeholder="Masukkan nama barang...">

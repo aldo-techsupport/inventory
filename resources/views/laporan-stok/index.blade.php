@@ -13,15 +13,18 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-                <div class="form-group">
-                    <label for="opsi-laporan-stok">Filter Stok Berdasarkan :</label>
-                    <select class="form-control" name="opsi-laporan-stok" id="opsi-laporan-stok">
-                        <option value="semua" selected>Semua</option>
-                        <option value="minimum">Batas Minimum</option>
-                        <option value="stok-habis">Stok Habis</option>
-                    </select>
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="opsi-laporan-stok">Filter Stok Berdasarkan :</label>
+                            <select class="form-control" name="opsi-laporan-stok" id="opsi-laporan-stok">
+                                <option value="semua" selected>Semua</option>
+                                <option value="minimum">Batas Minimum</option>
+                                <option value="stok-habis">Stok Habis</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
         <div class="card">

@@ -17,7 +17,7 @@
           <div class="row">
 
             <!-- LEFT -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
 
               <div class="form-group">
                 <label>Tanggal Masuk</label>
@@ -40,7 +40,7 @@
             </div>
 
             <!-- RIGHT -->
-           <div class="col-md-6">
+           <div class="col-12 col-md-6">
 
   <!-- PILIH BARANG -->
   <div class="form-group">
@@ -108,64 +108,57 @@
 <style>
   .select2-container {
     width: 100% !important;
-}
+  }
 
-.select2-container--default .select2-selection--single {
-    height: 38px !important;
+  /* === GLOBAL FORM CONSISTENCY (scoped to modal) === */
+  .modal .form-control {
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    box-shadow: none;
+  }
+
+  .modal .form-control:focus {
+    border-color: #cfcfcf;
+    box-shadow: none;
+  }
+
+  /* === SELECT2 STYLING === */
+  .modal .select2-container--default .select2-selection--single {
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    height: 38px;
     display: flex;
     align-items: center;
-}
+    padding: 0 8px;
+  }
 
-/* === GLOBAL FORM CONSISTENCY (scoped to modal) === */
-.modal .form-control,
-.modal .select2-container--default .select2-selection--single {
-    height: 40px !important;
-    border: 1px solid #dcdcdc !important;
-    border-radius: 6px !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    line-height: 1.5 !important;
-    padding: 8px 12px !important;
-    box-shadow: none !important;
-}
+  .modal .select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: #cfcfcf;
+    box-shadow: none;
+  }
 
-/* === HILANGKAN BORDER TEBAL === */
-.modal .form-control:focus,
-.modal .select2-container--default.select2-container--focus .select2-selection--single {
-    border: 1px solid #cfcfcf !important;
-    box-shadow: none !important;
-}
-
-/* === FIX SELECT2 TEXT POSITION (BIAR CENTER) === */
-.modal .select2-container--default .select2-selection--single {
-    display: flex !important;
-    align-items: center !important;
-}
-
-/* === DROPDOWN ARROW POSITION === */
-.select2-selection__arrow {
+  .select2-selection__arrow {
     height: 100% !important;
-}
+  }
 
-/* === INPUT GROUP (JUMLAH MASUK) === */
-.modal .input-group .form-control {
-    height: 40px !important;
-}
+  /* === INPUT GROUP (JUMLAH MASUK) === */
+  .modal .input-group-text {
+    border: 1px solid #dcdcdc;
+    border-left: none;
+    background: #f8f9fa;
+    font-size: 14px;
+    font-weight: 400;
+  }
 
-/* === SATUAN BOX === */
-.modal .input-group-text {
-    border: 1px solid #dcdcdc !important;
-    border-left: none !important;
-    background: #f8f9fa !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-}
-
-/* === LABEL (JANGAN TERLALU TEBAL) === */
-.modal label {
-    font-weight: 500 !important;
-    margin-bottom: 6px !important;
-}
+  /* === LABEL === */
+  .modal label {
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
 </style>
 
 

@@ -5,6 +5,26 @@
 
 @section('content')
 
+<style>
+.activity-cell {
+    max-width: 200px;
+    word-break: break-word;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.activity-desc {
+    max-width: 180px;
+    word-break: break-word;
+    font-size: 0.82rem;
+}
+@media (max-width: 768px) {
+    .activity-cell, .activity-desc {
+        max-width: 120px;
+        font-size: 0.78rem;
+    }
+}
+</style>
+
 <div class="section-header">
     <h1>Aktivitas User</h1>
 </div>
@@ -34,22 +54,26 @@
                                         {{ $log->causer->name }}
                                     @endif
                                 </td>
-                                <td>
+                                <td class="activity-cell">
                                     @if (isset($log->changes['old']))
                                         @foreach ($log->changes['old'] as $key => $itemChange)
-                                            {{ $key }} : {{ $itemChange }} <br>
+                                            <span class="text-muted">{{ $key }}:</span> {{ $itemChange }}<br>
                                         @endforeach
+                                    @else
+                                        -
                                     @endif
                                 </td>
-                                <td>
+                                <td class="activity-cell">
                                     @if (isset($log->changes['attributes']))
                                         @foreach ($log->changes['attributes'] as $key => $itemChange)
-                                            {{ $key }} : {{ $itemChange }} <br>
+                                            <span class="text-muted">{{ $key }}:</span> {{ $itemChange }}<br>
                                         @endforeach
+                                    @else
+                                        -
                                     @endif
                                 </td>
-                                <td>{{ $log->description }}</td>
-                                <td>{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
+                                <td class="activity-desc">{{ $log->description }}</td>
+                                <td style="white-space: nowrap;">{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
                             </tr>
                             @endforeach                        
                         </tbody>
@@ -64,7 +88,16 @@
 <script>
     $(document).ready(function(){
         $('#table_id').DataTable({
-            paging: true
+            paging: true,
+            autoWidth: false,
+            columnDefs: [
+                { width: '5%', targets: 0 },
+                { width: '10%', targets: 1 },
+                { width: '20%', targets: 2 },
+                { width: '20%', targets: 3 },
+                { width: '25%', targets: 4 },
+                { width: '15%', targets: 5 }
+            ]
         });
     })
 </script>

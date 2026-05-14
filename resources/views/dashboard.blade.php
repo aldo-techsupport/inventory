@@ -204,12 +204,22 @@ html, body {
 ====================================================== */
 @media (max-width: 992px) {
   .graph-container { height: 300px; }
+  .graph-card, .stock-card { padding: 18px 20px; }
 }
 @media (max-width: 768px) {
-  .graph-container { height: 260px; }
+  .graph-container { height: 220px; }
+  .section-header h1 { font-size: 1.4rem; }
+  .card-statistic-1 .card-body { font-size: 1.4rem; }
+  .card-statistic-1 .card-icon { width: 55px; height: 55px; font-size: 22px; margin: 14px; }
+  .graph-card, .stock-card { padding: 15px; margin-top: 1.2rem; }
+  .graph-card h4, .stock-card h4 { font-size: 1rem; }
 }
 @media (max-width: 576px) {
-  .card-statistic-1 { margin-bottom: 15px; }
+  .card-statistic-1 { margin-bottom: 12px; height: auto; min-height: 90px; }
+  .card-statistic-1 .card-body { font-size: 1.3rem; }
+  .graph-container { height: 200px; }
+  .table { font-size: 0.82rem; }
+  .table thead th, .table td { padding: 8px 10px; }
 }
 </style>
 
@@ -278,26 +288,28 @@ html, body {
     <h4>Stok Mencapai Batas Minimum</h4>
   </div>
   <div class="card-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Kode Barang</th>
-          <th>Nama Barang</th>
-          <th>Stok</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($barangMinimum as $barang)
-        <tr>
-          <td>{{ $loop->iteration }}</td>
-          <td>{{ $barang->kode_barang }}</td>
-          <td>{{ $barang->nama_barang }}</td>
-          <td><span class="badge badge-warning">{{ $barang->stok }}</span></td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Stok</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($barangMinimum as $barang)
+          <tr>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $barang->kode_barang }}</td>
+            <td>{{ $barang->nama_barang }}</td>
+            <td><span class="badge badge-warning">{{ $barang->stok }}</span></td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

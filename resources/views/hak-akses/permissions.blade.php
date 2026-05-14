@@ -26,6 +26,8 @@
     border-radius: 10px;
     transition: background 0.2s;
     border-bottom: 1px solid #f0f2ff;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .permission-row:last-child {
     border-bottom: none;
@@ -35,6 +37,7 @@
   }
   .menu-label {
     flex: 1;
+    min-width: 140px;
     font-weight: 500;
     color: #444;
     font-size: 0.92rem;
@@ -47,23 +50,47 @@
   }
   .permission-checks {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: center;
+    flex-wrap: wrap;
   }
   .check-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    min-width: 70px;
+    min-width: 60px;
   }
   .check-item label {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: #888;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.4px;
     margin: 0;
+    text-align: center;
+  }
+  @media (max-width: 576px) {
+    .permission-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .permission-checks {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .legend-box {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .select-all-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .col-lg-10.col-xl-8 {
+      padding: 0;
+    }
   }
   /* Custom checkbox */
   .custom-check {

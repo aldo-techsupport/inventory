@@ -19,22 +19,22 @@
             <div class="card-body">
                 <form id="filter_form">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-6 col-md-3">
                             <label>Tanggal Mulai</label>
                             <input type="date" class="form-control" id="tanggal_mulai">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-6 col-md-3">
                             <label>Tanggal Selesai</label>
                             <input type="date" class="form-control" id="tanggal_selesai">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-6 col-md-3">
                             <label>Nama Barang</label>
                             <input type="text" class="form-control" id="nama_barang" placeholder="Nama Barang">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-6 col-md-3">
                             <label>Customer</label>
                             <select id="customer_id" class="form-control">
                                 <option value="">-- Semua Customer --</option>
@@ -44,8 +44,8 @@
                             </select>
                         </div>
 
-                        <div class="col-md-12 mt-3 text-right">
-                            <button type="submit" class="btn btn-primary">Filter</button>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary mr-2">Filter</button>
                             <button type="button" id="refresh_btn" class="btn btn-secondary">Reset</button>
                         </div>
                     </div>

@@ -321,6 +321,108 @@
       background: #f0f3ff;
       color: #2e38ff;
     }
+
+    /* === SECTION HEADER RESPONSIVE === */
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header h1 {
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    .section-header .ml-auto {
+      margin-left: auto !important;
+    }
+
+    @media (max-width: 576px) {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .section-header .ml-auto {
+        margin-left: 0 !important;
+        width: 100%;
+      }
+      .section-header .ml-auto .btn {
+        width: 100%;
+        text-align: center;
+      }
+      .section-header h1 {
+        font-size: 1.2rem;
+      }
+
+      /* Navbar search hidden on mobile */
+      .search-element {
+        display: none;
+      }
+
+      /* Main content padding adjustment */
+      .main-content {
+        padding-top: 75px;
+      }
+
+      /* Card padding on mobile */
+      .card .card-body {
+        padding: 12px;
+      }
+
+      /* Table action buttons wrap */
+      .table td .btn {
+        margin-bottom: 4px;
+      }
+
+      /* Filter form buttons full width on mobile */
+      .btn-filter-group {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+      }
+      .btn-filter-group .btn {
+        flex: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      /* Navbar brand text shorter */
+      .sidebar-brand a {
+        font-size: 0.85rem;
+      }
+
+      /* Table responsive text size */
+      .table {
+        font-size: 0.82rem;
+      }
+
+      /* Modal full width on mobile */
+      .modal-dialog {
+        margin: 0.5rem;
+      }
+      .modal-dialog.modal-lg,
+      .modal-dialog.modal-xl {
+        max-width: calc(100% - 1rem) !important;
+      }
+
+      /* Graph container height */
+      .graph-container {
+        height: 220px !important;
+      }
+
+      /* Stock card padding */
+      .stock-card,
+      .graph-card {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      /* Section header font */
+      .section-header h1 {
+        font-size: 1.3rem;
+      }
+    }
   </style>
 
   <!-- Lottie Player -->

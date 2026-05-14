@@ -16,7 +16,7 @@
           <div class="row">
 
             <!-- LEFT IMAGE -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <label>Upload Gambar</label>
 
               <input type="file"
@@ -33,7 +33,7 @@
             </div>
 
             <!-- RIGHT FORM -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
 
               <div class="mb-2">
                 <label>Nama Barang</label>
@@ -85,8 +85,8 @@
 
 <style>
 #edit_gambar_preview img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 8px;
     margin: 5px;
@@ -94,8 +94,19 @@
 }
 /* MODAL LEBAR CUSTOM */
 #modal_edit_barang .modal-dialog {
-    max-width: 90%;   /* bisa kamu ubah: 85%, 90%, 95% */
+    max-width: 90%;
     margin: 1.75rem auto;
+}
+
+@media (max-width: 768px) {
+    #modal_edit_barang .modal-dialog {
+        max-width: calc(100% - 1rem);
+        margin: 0.5rem;
+    }
+    #edit_gambar_preview img {
+        width: 80px;
+        height: 80px;
+    }
 }
 
 /* OPTIONAL: lebih lebar lagi di layar besar */
@@ -106,17 +117,17 @@
 }
 /* TEXTAREA BESAR */
 .textarea-besar {
-    min-height: 290px;   /* tinggi awal */
+    min-height: 200px;
     font-size: 14px;
     line-height: 1.6;
-    padding: 1px;
-    border-radius: 1px;
+    padding: 10px 12px;
+    border-radius: 8px;
 }
 
 /* AUTO RESIZE SUPPORT */
 .auto-resize {
-    resize: auto;  /* pengguna bisa resize manual */
-    overflow: scroll;
+    resize: vertical;
+    overflow: auto;
 }
 </style>
 

@@ -11,7 +11,7 @@
           <div class="modal-body">
 
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-12 col-md-6">
                 <div class="form-group">
                   <label>Tanggal Keluar</label>
                   <input type="text" class="form-control" name="tanggal_keluar" id="tanggal_keluar">
@@ -32,7 +32,7 @@
 
               </div>
 
-              <div class="col-md-6">
+              <div class="col-12 col-md-6">
 
                 <div class="form-group">
                   <label>Pilih Barang</label>
@@ -86,11 +86,11 @@
                 <div class="form-group">
                   <label>Jumlah Keluar</label>
                   <div class="input-group">
-                    <input type="number" class="form-control" name="jumlah_keluar" id="jumlah_keluar" min="0" style="width: 75%;">
-                    <div class="input-group-append" style="width: 25%;">
-                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                    <input type="number" class="form-control" name="jumlah_keluar" id="jumlah_keluar" min="0">
+                    <div class="input-group-append">
+                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled style="border-left: none; max-width: 80px;">
                     </div>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_keluar"></div>
+                    <div class="alert alert-danger mt-2 d-none w-100" role="alert" id="alert-jumlah_keluar"></div>
                   </div>
                 </div>
 
