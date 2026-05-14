@@ -117,28 +117,28 @@
     align-items: center;
 }
 
-/* === GLOBAL FORM CONSISTENCY === */
-.form-control,
-.select2-container--default .select2-selection--single {
+/* === GLOBAL FORM CONSISTENCY (scoped to modal) === */
+.modal .form-control,
+.modal .select2-container--default .select2-selection--single {
     height: 40px !important;
     border: 1px solid #dcdcdc !important;
     border-radius: 6px !important;
     font-size: 14px !important;
     font-weight: 400 !important;
-    line-height: 4.4 !important;
-    padding: 55px 20px !important;
+    line-height: 1.5 !important;
+    padding: 8px 12px !important;
     box-shadow: none !important;
 }
 
 /* === HILANGKAN BORDER TEBAL === */
-.form-control:focus,
-.select2-container--default.select2-container--focus .select2-selection--single {
+.modal .form-control:focus,
+.modal .select2-container--default.select2-container--focus .select2-selection--single {
     border: 1px solid #cfcfcf !important;
     box-shadow: none !important;
 }
 
 /* === FIX SELECT2 TEXT POSITION (BIAR CENTER) === */
-.select2-container--default .select2-selection--single {
+.modal .select2-container--default .select2-selection--single {
     display: flex !important;
     align-items: center !important;
 }
@@ -149,12 +149,12 @@
 }
 
 /* === INPUT GROUP (JUMLAH MASUK) === */
-.input-group .form-control {
+.modal .input-group .form-control {
     height: 40px !important;
 }
 
 /* === SATUAN BOX === */
-.input-group-text {
+.modal .input-group-text {
     border: 1px solid #dcdcdc !important;
     border-left: none !important;
     background: #f8f9fa !important;
@@ -163,7 +163,7 @@
 }
 
 /* === LABEL (JANGAN TERLALU TEBAL) === */
-label {
+.modal label {
     font-weight: 500 !important;
     margin-bottom: 6px !important;
 }
