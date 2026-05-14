@@ -55,32 +55,15 @@
                             nama_barang: nama_barang,
                         },
                         success: function(response) {
-                            if (response && (response.stok || response.stok === 0) &&
-                                response.satuan_id) {
+                            if (response && (response.stok || response.stok === 0)) {
                                 $('#stok').val(response.stok);
-                                getSatuanName(response.satuan_id, function(satuan) {
-                                    $('#satuan_id').val(satuan);
-                                });
+                                $('#satuan_id').val(response.satuan ?? '');
                             } else if (response && response.stok === 0) {
                                 $('#stok').val(0);
                                 $('#satuan_id').val('');
                             }
                         },
                     });
-
-                    function getSatuanName(satuanId, callback) {
-
-    $.getJSON("{{ url('/api/satuan') }}", function(satuans) {
-
-        let satuan = satuans.find(function(s) {
-            return s.id == satuanId; // 🔥 pakai == biar tidak gagal type mismatch
-        });
-
-        callback(satuan ? satuan.satuan_barang : '');
-
-    });
-
-}
                 });
             }, 500);
         });
@@ -215,24 +198,40 @@ $(document).off('click', '#store_barangKeluar').on('click', '#store_barangKeluar
 
                 let errors = xhr.responseJSON;
 
-                if (errors.tanggal_keluar)
-                    $('#alert-tanggal_keluar').removeClass('d-none').text(errors.tanggal_keluar[0]);
+                // Cek apakah ada pesan tunggal (misal: stok tidak cukup)
+                if (errors.message) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: errors.message,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                    return;
+                }
 
-                if (errors.nama_barang)
-                    $('#alert-nama_barang').removeClass('d-none').text(errors.nama_barang[0]);
-
-                if (errors.jumlah_keluar)
-                    $('#alert-jumlah_keluar').removeClass('d-none').text(errors.jumlah_keluar[0]);
-
-                if (errors.customer_id)
-                    $('#alert-customer_id').removeClass('d-none').text(errors.customer_id[0]);
-
-            } else {
+                // Kumpulkan semua error validasi
+                let errorList = [];
+                $.each(errors, function(field, messages) {
+                    if (Array.isArray(messages)) errorList.push(messages[0]);
+                });
 
                 Swal.fire({
                     icon: 'error',
-                    title: 'Server Error',
-                    text: xhr.responseText.substring(0, 200)
+                    title: 'Periksa kembali inputan!',
+                    html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                        + errorList.map(m => `<li>${m}</li>`).join('')
+                        + '</ul>',
+                    confirmButtonColor: '#4f46e5'
+                });
+
+            } else {
+
+                let msg = xhr.responseJSON?.message ?? 'Terjadi kesalahan, coba lagi.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Menyimpan',
+                    text: msg,
+                    confirmButtonColor: '#4f46e5'
                 });
 
             }

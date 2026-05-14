@@ -42,12 +42,8 @@
 
               <div class="form-group mb-2">
                 <label style="font-weight:300;">Satuan Barang</label>
-                <select class="form-control form-control-sm" name="satuan_id" id="satuan_id">
-                  <option value="">-- Pilih Satuan --</option>
-                  @foreach ($satuans as $satuan)
-                    <option value="{{ $satuan->id }}">{{ $satuan->satuan_barang }}</option>
-                  @endforeach
-                </select>
+                <input type="text" class="form-control form-control-sm paste-enabled" name="satuan" id="satuan" placeholder="Misal: pcs, kg, dus, liter...">
+                <div class="alert alert-danger mt-2 d-none" id="alert-satuan" style="font-size:13px;"></div>
               </div>
 
               <div class="form-group mb-2">

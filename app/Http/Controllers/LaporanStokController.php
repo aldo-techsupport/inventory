@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Dompdf\Dompdf;
 use App\Models\Barang;
-use App\Models\Satuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -121,11 +120,10 @@ class LaporanStokController extends Controller
     }
 
     /**
-     * Get Satuan
+     * Get Satuan (Deprecated)
      */
     public function getSatuan()
     {
-        $satuans = Satuan::all();
-        return response()->json($satuans);
+        return response()->json([]);
     }
 }

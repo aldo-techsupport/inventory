@@ -178,16 +178,39 @@
 
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON;
-                        if (errors.tanggal_masuk)
-                            $('#alert-tanggal_masuk').removeClass('d-none').text(errors.tanggal_masuk[0]);
-                        if (errors.barang_id)
-                            $('#alert-barang_id').removeClass('d-none').text(errors.barang_id[0]);
-                        if (errors.jumlah_masuk)
-                            $('#alert-jumlah_masuk').removeClass('d-none').text(errors.jumlah_masuk[0]);
-                        if (errors.supplier_id)
-                            $('#alert-supplier_id').removeClass('d-none').text(errors.supplier_id[0]);
+
+                        if (errors.message) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: errors.message,
+                                confirmButtonColor: '#4f46e5'
+                            });
+                            return;
+                        }
+
+                        let errorList = [];
+                        $.each(errors, function(field, messages) {
+                            if (Array.isArray(messages)) errorList.push(messages[0]);
+                        });
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Periksa kembali inputan!',
+                            html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                                + errorList.map(m => `<li>${m}</li>`).join('')
+                                + '</ul>',
+                            confirmButtonColor: '#4f46e5'
+                        });
+
                     } else {
-                        Swal.fire({ icon: 'error', title: 'Server Error', text: xhr.responseText.substring(0, 200) });
+                        let msg = xhr.responseJSON?.message ?? 'Terjadi kesalahan, coba lagi.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Menyimpan',
+                            text: msg,
+                            confirmButtonColor: '#4f46e5'
+                        });
                     }
                 }
             });

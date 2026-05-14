@@ -1,5 +1,4 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <div class="modal fade" role="dialog" id="modal_tambah_barangMasuk">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -169,48 +168,4 @@
 }
 </style>
 
-<script>
-$(document).ready(function () {
 
-    // INIT SELECT2
-    $('#barang_id_masuk').select2({
-        dropdownParent: $('#modal_tambah_barangMasuk'),
-        width: '100%'
-    });
-
-    // 🔥 EVENT SEDERHANA (SEPERTI BARANG KELUAR)
-    $('#barang_id_masuk').on('change', function () {
-
-        let barang_id = $(this).val();
-
-        console.log("ID MASUK:", barang_id); // DEBUG
-
-        if (!barang_id) {
-            $('#stok_masuk').val('');
-            $('#satuan_masuk').text('-');
-            return;
-        }
-
-        $.ajax({
-            url: "/barang-masuk/get-barang-detail",
-            type: "GET",
-            data: { barang_id: barang_id },
-
-            success: function (res) {
-
-                console.log("RES MASUK:", res); // DEBUG
-
-                $('#stok_masuk').val(res.stok);
-                $('#satuan_masuk').text(res.satuan);
-
-            },
-
-            error: function (xhr) {
-                console.log("ERROR:", xhr.responseText);
-            }
-        });
-
-    });
-
-});
-</script>

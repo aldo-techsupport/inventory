@@ -451,11 +451,10 @@
 
               <li class="menu-header">DATA MASTER</li>
                 <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') || Request::is('satuan-barang') ? 'active' : '' }}" data-toggle="dropdown"><i class="fas fa-thin fa-cubes"></i><span>Data Barang</span></a>
+                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}" data-toggle="dropdown"><i class="fas fa-thin fa-cubes"></i><span>Data Barang</span></a>
                   <ul class="dropdown-menu">
                     <li><a class="nav-link {{ Request::is('barang') ? 'active' : '' }}" href="/barang"><i class="fa fa-solid fa-circle fa-xs"></i> Nama Barang</a></li>
                     <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}" href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a></li>
-                    <li><a class="nav-link {{ Request::is('satuan-barang') ? 'active' : '' }}" href="/satuan-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Satuan</a></li>
                   </ul>
                 </li>
                 <li class="dropdown">
@@ -492,7 +491,7 @@
               @endif
 
               @php
-                $showDataMaster = $user->canViewMenu('barang') || $user->canViewMenu('jenis-barang') || $user->canViewMenu('satuan-barang') || $user->canViewMenu('supplier') || $user->canViewMenu('customer');
+                $showDataMaster = $user->canViewMenu('barang') || $user->canViewMenu('jenis-barang') || $user->canViewMenu('supplier') || $user->canViewMenu('customer');
                 $showTransaksi  = $user->canViewMenu('barang-masuk') || $user->canViewMenu('barang-keluar');
                 $showLaporan    = $user->canViewMenu('laporan-stok') || $user->canViewMenu('laporan-barang-masuk') || $user->canViewMenu('laporan-barang-keluar');
                 $showManajemen  = $user->canViewMenu('data-pengguna') || $user->canViewMenu('hak-akses') || $user->canViewMenu('aktivitas-user');
@@ -500,9 +499,9 @@
 
               @if ($showDataMaster)
               <li class="menu-header">DATA MASTER</li>
-                @if ($user->canViewMenu('barang') || $user->canViewMenu('jenis-barang') || $user->canViewMenu('satuan-barang'))
+                @if ($user->canViewMenu('barang') || $user->canViewMenu('jenis-barang'))
                 <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') || Request::is('satuan-barang') ? 'active' : '' }}" data-toggle="dropdown">
+                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}" data-toggle="dropdown">
                     <i class="fas fa-thin fa-cubes"></i><span>Data Barang</span>
                   </a>
                   <ul class="dropdown-menu">
@@ -511,9 +510,6 @@
                     @endif
                     @if ($user->canViewMenu('jenis-barang'))
                     <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}" href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a></li>
-                    @endif
-                    @if ($user->canViewMenu('satuan-barang'))
-                    <li><a class="nav-link {{ Request::is('satuan-barang') ? 'active' : '' }}" href="/satuan-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Satuan</a></li>
                     @endif
                   </ul>
                 </li>

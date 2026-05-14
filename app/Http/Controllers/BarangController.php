@@ -7,7 +7,6 @@ use App\Models\Barang;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Satuan;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +24,6 @@ class BarangController extends Controller
         return view('barang.index', [
             'barangs'         => Barang::all(),
             'jenis_barangs'   => Jenis::all(),
-            'satuans'         => Satuan::all()
         ]);
     }
 
@@ -67,7 +65,7 @@ class BarangController extends Controller
             'gambar.*'      => 'image|mimes:jpeg,png,jpg|max:2048',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
-            'satuan_id'     => 'required'
+            'satuan'        => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -93,7 +91,7 @@ class BarangController extends Controller
             'gambar'        => json_encode($images),
             'stok_minimum'  => $request->stok_minimum,
             'jenis_id'      => $request->jenis_id,
-            'satuan_id'     => $request->satuan_id
+            'satuan'        => $request->satuan
         ]);
 
         return response()->json([
@@ -108,7 +106,7 @@ class BarangController extends Controller
      */
     public function show(Barang $barang)
     {
-        $barang->load(['jenis', 'satuan']); // WAJIB
+        $barang->load(['jenis']); // WAJIB
 
         return response()->json([
             'success' => true,
@@ -140,14 +138,14 @@ class BarangController extends Controller
             'gambar.*'      => 'image|mimes:jpeg,png,jpg|max:2048',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
-            'satuan_id'     => 'required'
+            'satuan'        => 'required'
         ], [
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
             'stok_minimum.numeric'  => 'Gunakan Angka!',
             'jenis_id.required'     => 'Pilih Jenis Barang!',
-            'satuan_id.required'    => 'Pilih Satuan Barang!',
+            'satuan.required'       => 'Isi Satuan Barang!',
             'gambar.array'          => 'Harus multiple file!',
             'gambar.max'            => 'Max 20 gambar!',
             'gambar.*.image'        => 'Harus gambar!',
@@ -200,7 +198,7 @@ class BarangController extends Controller
             'user_id'       => auth()->user()->id,
             'gambar'        => json_encode($images),
             'jenis_id'      => $request->jenis_id,
-            'satuan_id'     => $request->satuan_id
+            'satuan'        => $request->satuan
         ]);
 
         return response()->json([
@@ -251,7 +249,7 @@ class BarangController extends Controller
 
     public function cetakPdf($id)
     {
-        $item = Barang::with(['jenis', 'satuan', 'lastBarangMasuk.supplier'])->findOrFail($id);
+        $item = Barang::with(['jenis', 'lastBarangMasuk.supplier'])->findOrFail($id);
 
         $pdf = Pdf::loadView('pdf.barang', compact('item'));
 

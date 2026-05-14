@@ -53,7 +53,7 @@
                   <td>{{ $barang->jenis->jenis_barang ?? '-' }}</td>
                 <td>{{ $barang->nama_barang }}</td>
 
-                <td>{{ $barang->stok}}  {{ $barang->satuan->satuan_barang ?? '-' }}</td>
+                <td>{{ $barang->stok }} {{ $barang->satuan ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>

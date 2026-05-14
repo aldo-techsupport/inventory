@@ -51,9 +51,7 @@ class BarangMasuk extends Model
 
     public function getSatuanAttribute()
     {
-        return $this->barang && $this->barang->satuan
-            ? $this->barang->satuan->satuan_barang
-            : '-';
+        return $this->barang->satuan ?? '-';
     }
 
     public function getStokAttribute()

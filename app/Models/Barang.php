@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Jenis;
-use App\Models\Satuan;
 use App\Models\BarangMasuk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +17,7 @@ class Barang extends Model
 
     protected $table = 'barang';
 
-    protected $fillable = ['kode_barang', 'nama_barang', 'deskripsi', 'gambar', 'stok_minimum', 'jenis_id', 'stok', 'satuan_id', 'user_id'];
+    protected $fillable = ['kode_barang', 'nama_barang', 'deskripsi', 'gambar', 'stok_minimum', 'jenis_id', 'stok', 'satuan', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 
@@ -58,12 +57,6 @@ public function lastBarangMasuk()
     public function jenis()
     {
         return $this->belongsTo(Jenis::class, 'jenis_id');
-    }
-
-    // Satu Barang memiliki 1 satuan
-    public function satuan()
-    {
-        return $this->belongsTo(Satuan::class, 'satuan_id');
     }
     protected $attributes = [
         'stok' => 0

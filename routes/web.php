@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangKeluarController;
-use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
@@ -51,9 +50,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('/aktivitas-user', ActivityLogController::class);
     });
 
+    // Dashboard dapat diakses oleh semua user yang sudah login
+    Route::resource('/dashboard', DashboardController::class);
+    Route::get('/', [DashboardController::class, 'index']);
+
     Route::group(['middleware' => 'checkRole:kepala gudang,superadmin,admin gudang'], function () {
-        Route::resource('/dashboard', DashboardController::class);
-        Route::get('/', [DashboardController::class, 'index']);
 
         Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
         Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
@@ -85,9 +86,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/jenis-barang/get-data', [JenisController::class, 'getDataJenisBarang']);
         Route::resource('/jenis-barang', JenisController::class);
-
-        Route::get('/satuan-barang/get-data', [SatuanController::class, 'getDataSatuanBarang']);
-        Route::resource('/satuan-barang', SatuanController::class);
 
         Route::get('/supplier/get-data', [SupplierController::class, 'getDataSupplier']);
         Route::resource('/supplier', SupplierController::class);

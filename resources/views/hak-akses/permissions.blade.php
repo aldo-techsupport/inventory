@@ -203,7 +203,6 @@
                 'dashboard'             => 'fas fa-tachometer-alt',
                 'barang'                => 'fas fa-box',
                 'jenis-barang'          => 'fas fa-tags',
-                'satuan-barang'         => 'fas fa-ruler',
                 'supplier'              => 'fas fa-truck',
                 'customer'              => 'fas fa-user-tie',
                 'barang-masuk'          => 'fas fa-arrow-circle-down',

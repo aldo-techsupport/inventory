@@ -17,10 +17,8 @@ class HakAksesController extends Controller
     public static function menuList(): array
     {
         return [
-            'dashboard'           => ['label' => 'Dashboard',       'group' => 'Umum'],
             'barang'              => ['label' => 'Nama Barang',      'group' => 'Data Master'],
             'jenis-barang'        => ['label' => 'Jenis Barang',     'group' => 'Data Master'],
-            'satuan-barang'       => ['label' => 'Satuan Barang',    'group' => 'Data Master'],
             'supplier'            => ['label' => 'Supplier',         'group' => 'Data Master'],
             'customer'            => ['label' => 'Customer',         'group' => 'Data Master'],
             'barang-masuk'        => ['label' => 'Barang Masuk',     'group' => 'Transaksi'],
@@ -116,6 +114,11 @@ class HakAksesController extends Controller
     {
         $role = Role::find($id);
 
+        // Proteksi: role pertama (superadmin) tidak bisa diubah
+        if ($role->id === 1) {
+            return response()->json(['message' => 'Role ini tidak dapat diubah.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'role'      => 'required',
             'deskripsi' => 'required'
@@ -145,6 +148,11 @@ class HakAksesController extends Controller
      */
     public function destroy($id)
     {
+        // Proteksi: role pertama (superadmin) tidak bisa dihapus
+        if ((int)$id === 1) {
+            return response()->json(['message' => 'Role ini tidak dapat dihapus.'], 403);
+        }
+
         Role::find($id)->delete();
         return response()->json([
             'success' => true,
@@ -161,6 +169,12 @@ class HakAksesController extends Controller
      */
     public function permissions($id)
     {
+        // Proteksi: role pertama (superadmin) tidak bisa diatur permission-nya
+        if ((int)$id === 1) {
+            return redirect()->route('hak-akses.index')
+                ->with('error', 'Hak akses role ini tidak dapat diubah.');
+        }
+
         $role = Role::with('permissions')->findOrFail($id);
         $menuList = self::menuList();
 
@@ -181,6 +195,12 @@ class HakAksesController extends Controller
      */
     public function savePermissions(Request $request, $id)
     {
+        // Proteksi: role pertama (superadmin) tidak bisa diubah permission-nya
+        if ((int)$id === 1) {
+            return redirect()->route('hak-akses.index')
+                ->with('error', 'Hak akses role ini tidak dapat diubah.');
+        }
+
         $role = Role::findOrFail($id);
         $menuList = self::menuList();
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Satuan;
 use App\Models\Customer;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
@@ -77,7 +76,7 @@ class BarangKeluarController extends Controller
         // 🔥 VALIDASI STOK
         if ($request->jumlah_keluar > $barang->stok) {
             return response()->json([
-                'message' => 'Stok tidak cukup!'
+                'message' => "Stok tidak cukup! Stok tersedia: {$barang->stok} {$barang->satuan}"
             ], 422);
         }
 
@@ -169,23 +168,19 @@ class BarangKeluarController extends Controller
             return response()->json([
                 'nama_barang'   => $barang->nama_barang,
                 'stok'          => $barang->stok,
-                'satuan_id'     => $barang->satuan_id,
+                'satuan'        => $barang->satuan,
             ]);
         }
     }
 
-    /**
-     * Create Autocomplete Data In Update Method
-     */
-
     public function getStok(Request $request)
     {
         $namaBarang = $request->input('nama_barang');
-        $barang = Barang::where('nama_barang', $namaBarang)->select('stok', 'satuan_id')->first();
+        $barang = Barang::where('nama_barang', $namaBarang)->select('stok', 'satuan')->first();
 
         $response = [
-            'stok'          => $barang->stok,
-            'satuan_id'     => $barang->satuan_id
+            'stok'   => $barang->stok,
+            'satuan' => $barang->satuan
         ];
 
         return response()->json($response);
@@ -193,9 +188,8 @@ class BarangKeluarController extends Controller
 
     public function getSatuan()
     {
-        $satuans = Satuan::all();
-
-        return response()->json($satuans);
+        // Deprecated — satuan sekarang langsung dari data barang
+        return response()->json([]);
     }
 
     public function getBarangs(Request $request)

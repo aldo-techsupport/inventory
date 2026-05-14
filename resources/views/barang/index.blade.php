@@ -181,7 +181,7 @@
         formData.append('nama_barang', $('#nama_barang').val());
         formData.append('stok_minimum', $('#stok_minimum').val());
         formData.append('jenis_id', $('#jenis_id').val());
-        formData.append('satuan_id', $('#satuan_id').val());
+        formData.append('satuan', $('#satuan').val());
         formData.append('deskripsi', $('#deskripsi').val());
         formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
@@ -232,30 +232,52 @@
 
                     let errors = xhr.responseJSON;
 
-                    if (errors.nama_barang)
-                        $('#alert-nama_barang').removeClass('d-none').text(errors.nama_barang[0]);
+                    // Kumpulkan semua pesan error jadi list (termasuk gambar.0, gambar.1, dll)
+                    let errorList = [];
+                    $.each(errors, function(field, messages) {
+                        if (Array.isArray(messages)) {
+                            // Bersihkan nama field jadi lebih ramah (gambar.0 → Gambar 1)
+                            errorList.push(messages[0]);
+                        }
+                    });
 
-                    if (errors.stok_minimum)
-                        $('#alert-stok_minimum').removeClass('d-none').text(errors.stok_minimum[0]);
+                    // Khusus error gambar: cek semua key yang mengandung "gambar"
+                    let gambarErrors = [];
+                    $.each(errors, function(field, messages) {
+                        if (field.startsWith('gambar') && Array.isArray(messages)) {
+                            gambarErrors.push(messages[0]);
+                        }
+                    });
 
-                    if (errors.deskripsi)
-                        $('#alert-deskripsi').removeClass('d-none').text(errors.deskripsi[0]);
-
-                    if (errors.gambar)
-                        $('#alert-gambar').removeClass('d-none').text(errors.gambar[0]);
-
-                    if (errors.jenis_id)
-                        $('#alert-jenis_id').removeClass('d-none').text(errors.jenis_id[0]);
-
-                    if (errors.satuan_id)
-                        $('#alert-satuan_id').removeClass('d-none').text(errors.satuan_id[0]);
-
-                } else {
+                    if (gambarErrors.length > 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Upload Gambar Gagal',
+                            html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                                + gambarErrors.map(m => `<li>${m}</li>`).join('')
+                                + '</ul>',
+                            confirmButtonColor: '#4f46e5'
+                        });
+                        return;
+                    }
 
                     Swal.fire({
                         icon: 'error',
-                        title: 'Server Error',
-                        text: xhr.responseText.substring(0, 200)
+                        title: 'Periksa kembali inputan!',
+                        html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                            + errorList.map(m => `<li>${m}</li>`).join('')
+                            + '</ul>',
+                        confirmButtonColor: '#4f46e5'
+                    });
+
+                } else {
+
+                    let msg = xhr.responseJSON?.message ?? 'Terjadi kesalahan, coba lagi.';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Menyimpan',
+                        text: msg,
+                        confirmButtonColor: '#4f46e5'
                     });
 
                 }
@@ -301,7 +323,7 @@ $(document).on('click', '#button_detail_barang', function () {
 
             // ================= RELASI =================
             $('#detail_jenis').text(data.jenis?.jenis_barang ?? '-');
-            $('#detail_satuan').text(data.satuan?.satuan_barang ?? '-');
+            $('#detail_satuan').text(data.satuan ?? '-');
 
             // ================= IMAGE =================
             let images = [];
@@ -442,7 +464,7 @@ $(document).on('click', '#button_edit_barang', function() {
             $('#edit_nama_barang').val(data.nama_barang);
             $('#edit_stok_minimum').val(data.stok_minimum);
             $('#edit_jenis_id').val(data.jenis_id);
-            $('#edit_satuan_id').val(data.satuan_id);
+            $('#edit_satuan').val(data.satuan);
             $('#edit_deskripsi').val(data.deskripsi);
 
             // 🔥 SAFE IMAGE HANDLE
@@ -509,7 +531,7 @@ $(document).on('click', '#update', function(e) {
     formData.append('stok_minimum', $('#edit_stok_minimum').val());
     formData.append('deskripsi', $('#edit_deskripsi').val());
     formData.append('jenis_id', $('#edit_jenis_id').val());
-    formData.append('satuan_id', $('#edit_satuan_id').val());
+    formData.append('satuan', $('#edit_satuan').val());
 
     formData.append('_token', $("meta[name='csrf-token']").attr("content"));
     formData.append('_method', 'PUT');
@@ -550,11 +572,50 @@ $(document).on('click', '#update', function(e) {
 
             console.error("SERVER ERROR:", xhr.responseText);
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: 'Terjadi kesalahan server'
-            });
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON;
+
+                // Cek error gambar dulu
+                let gambarErrors = [];
+                $.each(errors, function(field, messages) {
+                    if (field.startsWith('gambar') && Array.isArray(messages)) {
+                        gambarErrors.push(messages[0]);
+                    }
+                });
+
+                if (gambarErrors.length > 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Gambar Gagal',
+                        html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                            + gambarErrors.map(m => `<li>${m}</li>`).join('')
+                            + '</ul>',
+                        confirmButtonColor: '#4f46e5'
+                    });
+                    return;
+                }
+
+                let errorList = [];
+                $.each(errors, function(field, messages) {
+                    if (Array.isArray(messages)) errorList.push(messages[0]);
+                });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Periksa kembali inputan!',
+                    html: '<ul style="text-align:left; padding-left:20px; margin:0;">'
+                        + errorList.map(m => `<li>${m}</li>`).join('')
+                        + '</ul>',
+                    confirmButtonColor: '#4f46e5'
+                });
+            } else {
+                let msg = xhr.responseJSON?.message ?? 'Terjadi kesalahan, coba lagi.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Update',
+                    text: msg,
+                    confirmButtonColor: '#4f46e5'
+                });
+            }
         }
     });
 

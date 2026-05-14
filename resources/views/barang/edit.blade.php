@@ -51,11 +51,7 @@
 
               <div class="mb-2">
                 <label>Satuan</label>
-                <select id="edit_satuan_id" name="satuan_id" class="form-control">
-                  @foreach ($satuans as $satuan)
-                  <option value="{{ $satuan->id }}">{{ $satuan->satuan_barang }}</option>
-                  @endforeach
-                </select>
+                <input type="text" id="edit_satuan" name="satuan" class="form-control" placeholder="Misal: pcs, kg, dus, liter...">
               </div>
 
               <div class="mb-2">

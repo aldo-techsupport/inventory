@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
@@ -13,7 +12,7 @@ class BarangMasukController extends Controller
     public function index()
     {
         return view('barang-masuk.index', [
-            'barangs'   => Barang::with('satuan')->get(), // 🔥 include satuan
+            'barangs'   => Barang::all(),
             'suppliers' => Supplier::all()
         ]);
     }
@@ -21,7 +20,7 @@ class BarangMasukController extends Controller
     // ================= DATATABLE =================
     public function getDataBarangMasuk()
     {
-        $data = BarangMasuk::with(['barang.satuan', 'supplier'])
+        $data = BarangMasuk::with(['barang', 'supplier'])
             ->latest()
             ->get();
 
@@ -38,27 +37,50 @@ class BarangMasukController extends Controller
             'barang_id'     => 'required|exists:barang,id',
             'jumlah_masuk'  => 'required|numeric|min:1',
             'supplier_id'   => 'required|exists:suppliers,id'
+        ], [
+            'tanggal_masuk.required' => 'Tanggal masuk wajib diisi!',
+            'tanggal_masuk.date'     => 'Format tanggal tidak valid!',
+            'barang_id.required'     => 'Pilih barang terlebih dahulu!',
+            'barang_id.exists'       => 'Barang tidak ditemukan!',
+            'jumlah_masuk.required'  => 'Jumlah masuk wajib diisi!',
+            'jumlah_masuk.numeric'   => 'Jumlah harus berupa angka!',
+            'jumlah_masuk.min'       => 'Jumlah masuk minimal 1!',
+            'supplier_id.required'   => 'Pilih supplier terlebih dahulu!',
+            'supplier_id.exists'     => 'Supplier tidak ditemukan!',
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
+        try {
+            $barang = Barang::findOrFail($request->barang_id);
 
-        $barangMasuk = BarangMasuk::create([
-            'tanggal_masuk'  => $request->tanggal_masuk,
-            'barang_id'      => $barang->id,
-            'jumlah_masuk'   => $request->jumlah_masuk,
-            'supplier_id'    => $request->supplier_id,
-            'kode_transaksi' => $request->kode_transaksi,
-            'user_id'        => auth()->id() ?? 1 // 🔥 aman kalau belum login
-        ]);
+            // Generate kode unik di server — pastikan tidak duplikat
+            do {
+                $kode = 'TRX-IN-' . now()->format('Y-m-d') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            } while (BarangMasuk::where('kode_transaksi', $kode)->exists());
 
-        // update stok
-        $barang->increment('stok', $request->jumlah_masuk);
+            $barangMasuk = BarangMasuk::create([
+                'tanggal_masuk'  => $request->tanggal_masuk,
+                'barang_id'      => $barang->id,
+                'jumlah_masuk'   => $request->jumlah_masuk,
+                'supplier_id'    => $request->supplier_id,
+                'kode_transaksi' => $kode,
+                'user_id'        => auth()->id() ?? 1
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Disimpan!',
-            'data'    => $barangMasuk->load(['barang.satuan', 'supplier'])
-        ]);
+            // update stok
+            $barang->increment('stok', $request->jumlah_masuk);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Disimpan!',
+                'data'    => $barangMasuk->load(['barang', 'supplier'])
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data. Silakan coba lagi.'
+            ], 500);
+        }
     }
 
     // ================= DELETE =================
@@ -82,7 +104,7 @@ class BarangMasukController extends Controller
     // ================= DETAIL (UNTUK SATUAN & STOK) =================
     public function getBarangDetail(Request $request)
     {
-        $barang = Barang::with('satuan')->find($request->barang_id);
+        $barang = Barang::find($request->barang_id);
 
         if (!$barang) {
             return response()->json([
@@ -93,13 +115,13 @@ class BarangMasukController extends Controller
 
         return response()->json([
             'stok'   => $barang->stok ?? 0,
-            'satuan' => $barang->satuan->satuan_barang ?? '-' // kolom yang benar
+            'satuan' => $barang->satuan ?? '-'
         ]);
     }
 
-    // ================= GET SATUAN =================
+    // ================= GET SATUAN (DEPRECATED - kept for compatibility) =================
     public function getSatuan()
     {
-        return response()->json(Satuan::all());
+        return response()->json([]);
     }
 }

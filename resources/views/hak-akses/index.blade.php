@@ -19,6 +19,13 @@
     </div>
     @endif
 
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa fa-lock mr-2"></i> {{ session('error') }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -44,7 +51,14 @@
 
     <!-- Helper function untuk render tombol aksi -->
     <script>
-        function renderActionButtons(id) {
+        function renderActionButtons(id, isLocked) {
+            if (isLocked) {
+                return `
+                    <span class="badge badge-secondary px-3 py-2" style="font-size:0.8rem; border-radius:20px;">
+                        <i class="fas fa-lock mr-1"></i> Terkunci
+                    </span>
+                `;
+            }
             return `
                 <a href="/hak-akses/${id}/permissions" class="btn btn-icon btn-info btn-lg mb-2" title="Atur Akses Menu">
                     <i class="fas fa-user-shield"></i>
@@ -59,12 +73,14 @@
         }
 
         function renderRoleRow(counter, value) {
+            const isLocked = counter === 1;
+            const rowStyle = isLocked ? 'background-color: #f8f9fa; color: #aaa;' : '';
             return `
-                <tr class="role-row" id="index_${value.id}">
+                <tr class="role-row" id="index_${value.id}" style="${rowStyle}">
                     <td>${counter}</td>
                     <td>${value.role}</td>
                     <td>${value.deskripsi ?? '-'}</td>
-                    <td>${renderActionButtons(value.id)}</td>
+                    <td>${renderActionButtons(value.id, isLocked)}</td>
                 </tr>
             `;
         }
