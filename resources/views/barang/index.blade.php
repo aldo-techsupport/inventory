@@ -8,8 +8,10 @@
     <div class="section-header">
         <h1>Data Barang</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah
                 Barang</a>
+            @endif
         </div>
     </div>
 
@@ -40,6 +42,7 @@
 <!-- Datatables Jquery -->
 <script>
     var table;
+    var canAdd = {{ $canAdd ? 'true' : 'false' }};
 
     function loadData() {
         $.ajax({
@@ -115,8 +118,10 @@
                             <td>${stok}</td>
                             <td>
                                 <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i></a>
+                                ${canAdd ? `
                                 <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i></a>
                                 <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i></a>
+                                ` : ''}
                             </td>
                         </tr>
                     `;

@@ -19,7 +19,8 @@ class BarangKeluarController extends Controller
         return view('barang-keluar.index', [
             'barangs'           => Barang::all(),
             'barangKeluar'      => BarangKeluar::all(),
-            'customers'         => Customer::all()
+            'customers'         => Customer::all(),
+            'canAdd'            => auth()->user()->canAddMenu('barang-keluar'),
         ]);
     }
 
@@ -48,8 +49,11 @@ class BarangKeluarController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->canAddMenu('barang-keluar')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
-            'tanggal_keluar' => 'required',
             'nama_barang'    => 'required',
             'customer_id'    => 'required|integer|exists:customers,id',
             'jumlah_keluar'  => 'required|numeric|min:1',
@@ -135,6 +139,10 @@ class BarangKeluarController extends Controller
      */
     public function destroy(BarangKeluar $barangKeluar)
     {
+        if (!auth()->user()->canAddMenu('barang-keluar')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $jumlahKeluar = $barangKeluar->jumlah_keluar;
 
         // 🔥 ambil barang dari RELASI (bukan nama_barang)

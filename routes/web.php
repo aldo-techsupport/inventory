@@ -46,7 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('/hak-akses', HakAksesController::class);
     });
 
-    Route::group(['middleware' => 'checkRole:superadmin,kepala gudang'], function () {
+    // Aktivitas User — akses via permission
+    Route::group(['middleware' => 'checkRole:permission:aktivitas-user'], function () {
         Route::resource('/aktivitas-user', ActivityLogController::class);
     });
 
@@ -54,59 +55,64 @@ Route::middleware('auth')->group(function () {
     Route::resource('/dashboard', DashboardController::class);
     Route::get('/', [DashboardController::class, 'index']);
 
-    Route::group(['middleware' => 'checkRole:kepala gudang,superadmin,admin gudang'], function () {
-
+    // Laporan — akses via permission (read-only, tidak ada write)
+    Route::group(['middleware' => 'checkRole:permission:laporan-stok'], function () {
         Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
         Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
         Route::get('/api/satuan/', [LaporanStokController::class, 'getSatuan']);
         Route::resource('/laporan-stok', LaporanStokController::class);
+    });
 
+    Route::group(['middleware' => 'checkRole:permission:laporan-barang-masuk'], function () {
         Route::get('/laporan-barang-masuk/get-data', [LaporanBarangMasukController::class, 'getData']);
         Route::get('/laporan-barang-masuk/print-barang-masuk', [LaporanBarangMasukController::class, 'printBarangMasuk']);
         Route::get('/api/supplier/', [LaporanBarangMasukController::class, 'getSupplier']);
         Route::resource('/laporan-barang-masuk', LaporanBarangMasukController::class);
+    });
 
+    Route::group(['middleware' => 'checkRole:permission:laporan-barang-keluar'], function () {
         Route::get('/laporan-barang-keluar/get-data', [LaporanBarangKeluarController::class, 'getData']);
         Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
         Route::get('/api/customer/', [LaporanBarangKeluarController::class, 'getCustomer']);
         Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
-
-        Route::get('/ubah-password', [UbahPasswordController::class, 'index']);
-        Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
     });
 
+    Route::get('/ubah-password', [UbahPasswordController::class, 'index']);
+    Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
 
-    Route::group(['middleware' => 'checkRole:superadmin,admin gudang,kepala gudang'], function () {
+    // Data Master — akses via permission
+    Route::group(['middleware' => 'checkRole:permission:barang'], function () {
         Route::get('/barang/cetak-pdf/{id}', [BarangController::class, 'cetakPdf'])
             ->name('barang.cetak.pdf');
-
         Route::get('/barang/get-data', [BarangController::class, 'getDataBarang']);
         Route::resource('/barang', BarangController::class);
+    });
 
-
+    Route::group(['middleware' => 'checkRole:permission:jenis-barang'], function () {
         Route::get('/jenis-barang/get-data', [JenisController::class, 'getDataJenisBarang']);
         Route::resource('/jenis-barang', JenisController::class);
+    });
 
+    Route::group(['middleware' => 'checkRole:permission:supplier'], function () {
         Route::get('/supplier/get-data', [SupplierController::class, 'getDataSupplier']);
         Route::resource('/supplier', SupplierController::class);
+    });
 
+    Route::group(['middleware' => 'checkRole:permission:customer'], function () {
         Route::get('/customer/get-data', [CustomerController::class, 'getDataCustomer']);
         Route::resource('/customer', CustomerController::class);
+    });
 
-       Route::get('/api/barang-masuk', [BarangMasukController::class, 'getAutoCompleteData']);
+    Route::group(['middleware' => 'checkRole:permission:barang-masuk'], function () {
+        Route::get('/api/barang-masuk', [BarangMasukController::class, 'getAutoCompleteData']);
+        Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
+        Route::get('/api/satuan-masuk', [BarangMasukController::class, 'getSatuan']);
+        Route::get('/barang-masuk/get-barang-detail', [BarangMasukController::class, 'getBarangDetail']);
+        Route::resource('/barang-masuk', BarangMasukController::class)
+            ->where(['barang_masuk' => '[0-9]+']);
+    });
 
-Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
-
-// 🔥 FIX 1: GANTI URL API SATUAN (JANGAN DUPLIKAT)
-Route::get('/api/satuan-masuk', [BarangMasukController::class, 'getSatuan']);
-
-// 🔥 FIX 2: TAMBAHKAN ROUTE INI (WAJIB DI ATAS RESOURCE)
-Route::get('/barang-masuk/get-barang-detail', [BarangMasukController::class, 'getBarangDetail']);
-
-// 🔥 FIX 3: RESOURCE DI PALING BAWAH
-Route::resource('/barang-masuk', BarangMasukController::class)
-    ->where(['barang_masuk' => '[0-9]+']);
-    
+    Route::group(['middleware' => 'checkRole:permission:barang-keluar'], function () {
         Route::get('/api/barang-keluar/', [BarangKeluarController::class, 'getAutoCompleteData']);
         Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
         Route::get('/api/satuan/', [BarangKeluarController::class, 'getSatuan']);

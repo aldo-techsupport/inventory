@@ -7,8 +7,10 @@
     <div class="section-header">
         <h1>Data Jenis Barang</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_jenis_barang"><i class="fa fa-plus"></i>
                 Jenis Barang</a>
+            @endif
         </div>
     </div>
 
@@ -36,6 +38,8 @@
     <!-- Datatables Jquery -->
     <script>
         $(document).ready(function() {
+            var canAdd = {{ $canAdd ? 'true' : 'false' }};
+
             $('#table_id').DataTable({
                 paging: true
             });
@@ -47,14 +51,15 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
+                        let opsi = canAdd
+                            ? `<a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                               <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>`
+                            : '-';
                         let jenisBarang = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>
                     <td>${value.jenis_barang}</td>
-                    <td>
-                        <a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                        <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                    </td>
+                    <td>${opsi}</td>
                 </tr>
             `;
                         $('#table_id').DataTable().row.add($(jenisBarang)).draw(false);
@@ -105,25 +110,26 @@ $('body').on('click', '#store_jenis_barang', function (e) {
             // 🔥 langsung inject ke DataTable TANPA reload
             let table = $('#table_id').DataTable();
 
+            let newOpsi = canAdd
+                ? `<a href="javascript:void(0)"
+                       id="button_edit_jenis_barang"
+                       data-id="${response.data.id}"
+                       class="btn btn-warning btn-lg mb-2">
+                       <i class="far fa-edit"></i>
+                   </a>
+                   <a href="javascript:void(0)"
+                       id="button_hapus_jenis_barang"
+                       data-id="${response.data.id}"
+                       class="btn btn-danger btn-lg mb-2">
+                       <i class="fas fa-trash"></i>
+                   </a>`
+                : '-';
+
             table.row.add($(`
                 <tr id="index_${response.data.id}">
                     <td></td>
                     <td>${response.data.jenis_barang}</td>
-                    <td>
-                        <a href="javascript:void(0)"
-                           id="button_edit_jenis_barang"
-                           data-id="${response.data.id}"
-                           class="btn btn-warning btn-lg mb-2">
-                           <i class="far fa-edit"></i>
-                        </a>
-
-                        <a href="javascript:void(0)"
-                           id="button_hapus_jenis_barang"
-                           data-id="${response.data.id}"
-                           class="btn btn-danger btn-lg mb-2">
-                           <i class="fas fa-trash"></i>
-                        </a>
-                    </td>
+                    <td>${newOpsi}</td>
                 </tr>
             `)).draw(false);
 
@@ -263,14 +269,15 @@ $('body').on('click', '#store_jenis_barang', function (e) {
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
+                                        let opsiHapus = canAdd
+                                            ? `<a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                               <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>`
+                                            : '-';
                                         let jenisBarang = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>
                                             <td>${value.jenis_barang}</td>
-                                            <td>
-                                                <a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                                <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                            </td>
+                                            <td>${opsiHapus}</td>
                                         </tr>
                                     `;
                                         $('#table_id').DataTable().row.add(

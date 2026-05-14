@@ -11,7 +11,9 @@ class JenisController extends Controller
 {
     public function index()
     {
-        return view('jenis-barang.index');
+        return view('jenis-barang.index', [
+            'canAdd' => auth()->user()->canAddMenu('jenis-barang'),
+        ]);
     }
 
     public function getDataJenisBarang()
@@ -41,13 +43,11 @@ class JenisController extends Controller
                 ], 422);
             }
 
-            // 🔥 FIX UTAMA
-            $userId = auth()->id();
-
-            if (!$userId) {
-                // fallback supaya tidak crash
-                $userId = 1;
+            if (!auth()->user()->canAddMenu('jenis-barang')) {
+                return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
             }
+
+            $userId = auth()->id() ?? 1;
 
             $jenisBarang = Jenis::create([
                 'jenis_barang' => $request->jenis_barang,
@@ -104,6 +104,10 @@ class JenisController extends Controller
                 ], 404);
             }
 
+            if (!auth()->user()->canAddMenu('jenis-barang')) {
+                return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+            }
+
             $validator = Validator::make($request->all(), [
                 'jenis_barang' => 'required'
             ], [
@@ -154,6 +158,10 @@ class JenisController extends Controller
                     'success' => false,
                     'message' => 'Data tidak ditemukan'
                 ], 404);
+            }
+
+            if (!auth()->user()->canAddMenu('jenis-barang')) {
+                return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
             }
 
             $jenis->delete();

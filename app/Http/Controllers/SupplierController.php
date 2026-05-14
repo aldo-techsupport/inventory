@@ -11,7 +11,8 @@ class SupplierController extends Controller
     public function index()
     {
         return view('supplier.index', [
-            'suppliers' => Supplier::latest()->get()
+            'suppliers' => Supplier::latest()->get(),
+            'canAdd'    => auth()->user()->canAddMenu('supplier'),
         ]);
     }
 
@@ -30,8 +31,11 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+        if (!auth()->user()->canAddMenu('supplier')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
-            'supplier'  => 'required|string|max:255',
             'alamat'    => 'required|string',
             'deskripsi' => 'nullable|string'
         ], [
@@ -86,6 +90,10 @@ class SupplierController extends Controller
 
     public function update(Request $request, Supplier $supplier)
     {
+        if (!auth()->user()->canAddMenu('supplier')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'supplier'  => 'required|string|max:255',
             'alamat'    => 'required|string',
@@ -114,6 +122,10 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier)
     {
+        if (!auth()->user()->canAddMenu('supplier')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $supplier->delete(); // ✅ lebih clean dari destroy()
 
         return response()->json([

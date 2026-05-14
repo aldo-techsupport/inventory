@@ -6,9 +6,11 @@
     <div class="section-header">
         <h1>Barang Masuk</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barangMasuk">
                 <i class="fa fa-plus"></i> Barang Masuk
             </a>
+            @endif
         </div>
     </div>
 
@@ -38,6 +40,9 @@
     </div>
 
     <script>
+    // Permission flag dari server
+    var canAdd = {{ $canAdd ? 'true' : 'false' }};
+
     // ================= GENERATE KODE TRANSAKSI =================
     function generateKodeTransaksi() {
         var tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
@@ -66,9 +71,9 @@
                             <td>${value.jumlah_masuk ?? 0}</td>
                             <td>${value.supplier ? value.supplier.supplier : '-'}</td>
                             <td>
-                                <button class="btn btn-danger btn-sm delete-btn" data-id="${value.id}">
+                                ${canAdd ? `<button class="btn btn-danger btn-sm delete-btn" data-id="${value.id}">
                                     <i class="fas fa-trash"></i> Hapus
-                                </button>
+                                </button>` : '-'}
                             </td>
                         </tr>
                     `;

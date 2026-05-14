@@ -15,7 +15,8 @@ class CustomerController extends Controller
     public function index()
     {
         return view('customer.index', [
-            'customers' => Customer::all()
+            'customers' => Customer::all(),
+            'canAdd'    => auth()->user()->canAddMenu('customer'),
         ]);
     }
 
@@ -40,8 +41,11 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->canAddMenu('customer')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
-            'customer'  => 'required',
             'alamat'    => 'required'
         ], [
             'customer.required' => 'Form Customer Wajib Di Isi !',
@@ -91,6 +95,10 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
+        if (!auth()->user()->canAddMenu('customer')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'customer'  => 'required',
             'alamat'    => 'required',
@@ -124,6 +132,10 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
+        if (!auth()->user()->canAddMenu('customer')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         Customer::destroy($customer->id);
         return response()->json([
             'success' => true,

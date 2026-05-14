@@ -13,7 +13,8 @@ class BarangMasukController extends Controller
     {
         return view('barang-masuk.index', [
             'barangs'   => Barang::all(),
-            'suppliers' => Supplier::all()
+            'suppliers' => Supplier::all(),
+            'canAdd'    => auth()->user()->canAddMenu('barang-masuk'),
         ]);
     }
 
@@ -32,6 +33,10 @@ class BarangMasukController extends Controller
     // ================= STORE =================
     public function store(Request $request)
     {
+        if (!auth()->user()->canAddMenu('barang-masuk')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $request->validate([
             'tanggal_masuk' => 'required|date',
             'barang_id'     => 'required|exists:barang,id',
@@ -86,6 +91,10 @@ class BarangMasukController extends Controller
     // ================= DELETE =================
     public function destroy(BarangMasuk $barangMasuk)
     {
+        if (!auth()->user()->canAddMenu('barang-masuk')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $barang = $barangMasuk->barang;
 
         if ($barang) {

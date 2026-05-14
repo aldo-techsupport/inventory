@@ -7,8 +7,10 @@
     <div class="section-header">
         <h1>Data Supplier</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_supplier"><i class="fa fa-plus"></i>
                 Supplier</a>
+            @endif
         </div>
     </div>
 
@@ -39,6 +41,7 @@
     <script>
         $(document).ready(function() {
             let table = $('#table_id').DataTable({ paging: true });
+            var canAdd = {{ $canAdd ? 'true' : 'false' }};
 
             function loadSupplier() {
                 $.ajax({
@@ -49,16 +52,17 @@
                         let counter = 1;
                         table.clear();
                         $.each(response.data, function(key, value) {
+                            let opsi = canAdd
+                                ? `<a href="javascript:void(0)" id="button_edit_supplier" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                   <a href="javascript:void(0)" id="button_hapus_supplier" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>`
+                                : '-';
                             let supplier = `
                     <tr class="barang-row" id="index_${value.id}">
                         <td>${counter++}</td>
                         <td>${value.supplier}</td>
                         <td>${value.alamat}</td>
                         <td>${value.deskripsi ?? '-'}</td>
-                        <td>
-                            <a href="javascript:void(0)" id="button_edit_supplier" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                            <a href="javascript:void(0)" id="button_hapus_supplier" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                        </td>
+                        <td>${opsi}</td>
                     </tr>
                 `;
                             table.row.add($(supplier)).draw(false);
@@ -157,16 +161,18 @@ function loadSupplier() {
 
             $.each(response.data, function(key, value) {
 
+                let opsi = canAdd
+                    ? `<a href="javascript:void(0)" data-id="${value.id}" class="btn btn-warning btn-sm" id="button_edit_supplier">Edit</a>
+                       <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-danger btn-sm" id="button_hapus_supplier">Hapus</a>`
+                    : '-';
+
                 let row = `
                     <tr id="index_${value.id}">
                         <td>${counter++}</td>
                         <td>${value.supplier}</td>
                         <td>${value.alamat}</td>
                         <td>${value.deskripsi ?? '-'}</td>
-                        <td>
-                            <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-warning btn-sm" id="button_edit_supplier">Edit</a>
-                            <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-danger btn-sm" id="button_hapus_supplier">Hapus</a>
-                        </td>
+                        <td>${opsi}</td>
                     </tr>
                 `;
 

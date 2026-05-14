@@ -6,8 +6,10 @@
     <div class="section-header">
         <h1>Barang Keluar</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barangKeluar"><i class="fa fa-plus"></i>
                 Barang Keluar</a>
+            @endif
         </div>
     </div>
 
@@ -40,6 +42,8 @@
 
     <!-- Select2 Autocomplete -->
     <script>
+        var canAdd = {{ $canAdd ? 'true' : 'false' }};
+
         $(document).ready(function() {
             setTimeout(function() {
                 $('.js-example-basic-single').select2();
@@ -94,9 +98,9 @@
                     <td>${value.jumlah_keluar}</td>
                     <td>${customerName}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
+                        ${canAdd ? `<button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
                             <i class="fas fa-trash"></i> Hapus
-                        </button>
+                        </button>` : '-'}
                     </td>
                 </tr>
             `;
@@ -268,9 +272,9 @@ function loadBarangKeluar() {
                         <td>${value.jumlah_keluar}</td>
                         <td>${customerName}</td>
                         <td>
-                            <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
+                            ${canAdd ? `<button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
                                 Hapus
-                            </button>
+                            </button>` : '-'}
                         </td>
                     </tr>
                 `;
@@ -335,9 +339,9 @@ function loadBarangKeluar() {
                                             <td>${value.jumlah_keluar}</td>
                                             <td>${customerName}</td>
                                             <td>
-                                                <button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
+                                                ${canAdd ? `<button class="btn btn-danger btn-sm" id="button_hapus_barangKeluar" data-id="${value.id}">
                                                     <i class="fas fa-trash"></i> Hapus
-                                                </button>
+                                                </button>` : '-'}
                                             </td>
                                         </tr>
                                     `;

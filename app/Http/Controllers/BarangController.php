@@ -24,6 +24,7 @@ class BarangController extends Controller
         return view('barang.index', [
             'barangs'         => Barang::all(),
             'jenis_barangs'   => Jenis::all(),
+            'canAdd'          => auth()->user()->canAddMenu('barang'),
         ]);
     }
 
@@ -58,8 +59,11 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->canAddMenu('barang')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
-            'nama_barang'   => 'required',
             'deskripsi'     => 'required',
             'gambar'        => 'required|array|max:20',
             'gambar.*'      => 'image|mimes:jpeg,png,jpg|max:2048',
@@ -131,6 +135,10 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
+        if (!auth()->user()->canAddMenu('barang')) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
             'deskripsi'     => 'required',
@@ -214,6 +222,10 @@ class BarangController extends Controller
      */
   public function destroy($id)
 {
+    if (!auth()->user()->canAddMenu('barang')) {
+        return response()->json(['message' => 'Anda tidak memiliki akses untuk melakukan aksi ini.'], 403);
+    }
+
     try {
         $barang = Barang::find($id);
 

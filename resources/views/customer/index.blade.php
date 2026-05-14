@@ -7,8 +7,10 @@
     <div class="section-header">
         <h1>Data Customer</h1>
         <div class="ml-auto">
+            @if($canAdd)
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_customer"><i class="fa fa-plus"></i>
                 Customer</a>
+            @endif
         </div>
     </div>
 
@@ -39,6 +41,8 @@
    <script>
 $(document).ready(function() {
 
+    var canAdd = {{ $canAdd ? 'true' : 'false' }};
+
     let table = $('#table_id').DataTable({
         paging: true
     });
@@ -55,16 +59,18 @@ $(document).ready(function() {
                 let counter = 1;
                 $.each(response.data, function(key, value) {
 
+                    let opsi = canAdd
+                        ? `<a href="javascript:void(0)" data-id="${value.id}" class="btn btn-warning btn-sm button_edit_customer">Edit</a>
+                           <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-danger btn-sm button_hapus_customer">Hapus</a>`
+                        : '-';
+
                     let row = `
                     <tr id="index_${value.id}">
                         <td>${counter++}</td>
                         <td>${value.customer}</td>
                         <td>${value.alamat}</td>
                         <td>${value.deskripsi ?? '-'}</td>
-                        <td>
-                            <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-warning btn-sm button_edit_customer">Edit</a>
-                            <a href="javascript:void(0)" data-id="${value.id}" class="btn btn-danger btn-sm button_hapus_customer">Hapus</a>
-                        </td>
+                        <td>${opsi}</td>
                     </tr>
                     `;
 
