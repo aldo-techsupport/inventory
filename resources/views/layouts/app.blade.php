@@ -568,18 +568,18 @@
                 </li>
 
               <li class="menu-header">TRANSAKSI</li>
-              <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-up"></i> <span>Barang Keluar</span></a></li>
-              <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="barang-masuk"><i class="fa fa-solid fa-arrow-down"></i><span>Barang Masuk</span></a></li>
+              <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-up"></i> <span>Barang Keluar</span></a></li>
+              <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-down"></i><span>Barang Masuk</span></a></li>
 
               <li class="menu-header">LAPORAN</li>
-              <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
-              <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
-              <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
+              <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
+              <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
+              <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
 
               <li class="menu-header">MANAJEMEN USER</li>
-              <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
-              <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
-              <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
+              <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="/data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
+              <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="/hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
+              <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="/aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
 
             @else
               {{-- Non-superadmin: tampilkan menu berdasarkan permission --}}
@@ -637,36 +637,36 @@
               @if ($showTransaksi)
               <li class="menu-header">TRANSAKSI</li>
                 @if ($user->canViewMenu('barang-masuk'))
-                <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a></li>
+                <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a></li>
                 @endif
                 @if ($user->canViewMenu('barang-keluar'))
-                <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i> <span>Barang Keluar</span></a></li>
+                <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i> <span>Barang Keluar</span></a></li>
                 @endif
               @endif
 
               @if ($showLaporan)
               <li class="menu-header">LAPORAN</li>
                 @if ($user->canViewMenu('laporan-stok'))
-                <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
+                <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
                 @endif
                 @if ($user->canViewMenu('laporan-barang-masuk'))
-                <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
+                <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
                 @endif
                 @if ($user->canViewMenu('laporan-barang-keluar'))
-                <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
+                <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
                 @endif
               @endif
 
               @if ($showManajemen)
               <li class="menu-header">MANAJEMEN USER</li>
                 @if ($user->canViewMenu('data-pengguna'))
-                <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
+                <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="/data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
                 @endif
                 @if ($user->canViewMenu('hak-akses'))
-                <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
+                <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="/hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
                 @endif
                 @if ($user->canViewMenu('aktivitas-user'))
-                <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
+                <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="/aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
                 @endif
               @endif
 
