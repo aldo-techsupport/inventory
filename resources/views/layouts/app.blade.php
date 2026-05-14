@@ -584,7 +584,7 @@
       </div>
 <footer class="main-footer">
     <div class="footer-left">
-        Inventaris-Gudang &copy; {{ date('Y') }}
+        &copy; {{ date('Y') }} PT Vendora Solusi Digital dan Digital Tekno. All rights reserved.
     </div>
     <div class="footer-right">
 

@@ -303,7 +303,7 @@ html, body {
 
 <!-- ===== FOOTER ===== -->
 <footer class="main-footer">
-  Inventaris Gudang © 2025 - DCLIQ Digital System
+  &copy; {{ date('Y') }} PT Vendora Solusi Digital dan Digital Tekno. All rights reserved.
 </footer>
 
 @endsection
