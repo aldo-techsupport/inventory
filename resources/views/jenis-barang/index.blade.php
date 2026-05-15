@@ -8,8 +8,9 @@
         <h1>Data Jenis Barang</h1>
         <div class="ml-auto">
             @if($canAdd)
-            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_jenis_barang"><i class="fa fa-plus"></i>
-                Jenis Barang</a>
+            <button type="button" class="btn btn-primary" id="button_tambah_jenis_barang">
+                <i class="fa fa-plus"></i> Jenis Barang
+            </button>
             @endif
         </div>
     </div>
@@ -27,268 +28,190 @@
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Datatables Jquery -->
-    <script>
-        $(document).ready(function() {
-            var canAdd = {{ $canAdd ? 'true' : 'false' }};
+@endsection
 
-            $('#table_id').DataTable({
-                paging: true
-            });
-            $.ajax({
-                url: "/jenis-barang/get-data",
-                type: "GET",
-                dataType: 'JSON',
-                success: function(response) {
-                    let counter = 1;
-                    $('#table_id').DataTable().clear();
-                    $.each(response.data, function(key, value) {
-                        let opsi = canAdd
-                            ? `<a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                               <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>`
-                            : '-';
-                        let jenisBarang = `
-                <tr class="barang-row" id="index_${value.id}">
-                    <td>${counter++}</td>
-                    <td>${value.jenis_barang}</td>
-                    <td>${opsi}</td>
-                </tr>
-            `;
-                        $('#table_id').DataTable().row.add($(jenisBarang)).draw(false);
-                    });
-                }
-            });
-        });
-    </script>
+@push('scripts')
+<script>
+$(document).ready(function () {
 
-    <!-- Show Modal Tambah Jenis Barang -->
-   <script>
-$('body').on('click', '#button_tambah_jenis_barang', function () {
-    $('#modal_tambah_jenis_barang').modal('show');
-});
+    var canAdd = {{ $canAdd ? 'true' : 'false' }};
 
-// ✅ gunakan ID unik (WAJIB)
-$('body').on('click', '#store_jenis_barang', function (e) {
-    e.preventDefault();
+    // ===== HELPERS =====
+    function openModal(id)  { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    let jenis_barang = $('#jenis_barang').val().trim();
-    let token = $("meta[name='csrf-token']").attr("content");
-
-    // validasi sederhana
-    if (!jenis_barang) {
-        Swal.fire('Warning', 'Jenis barang tidak boleh kosong', 'warning');
-        return;
+    // ===== CLOSE TAMBAH =====
+    function closeTambah() {
+        closeModal('modal_tambah_jenis_barang');
+        document.getElementById('jenis_barang').value = '';
+        var el = document.getElementById('alert-jenis_barang');
+        if (el) { el.textContent = ''; el.classList.remove('show'); }
     }
 
-    $.ajax({
-        url: '/jenis-barang',
-        type: "POST",
-        headers: {
-            'X-CSRF-TOKEN': token
-        },
-        data: {
-            jenis_barang: jenis_barang
-        },
+    // ===== CLOSE EDIT =====
+    function closeEdit() {
+        closeModal('modal_edit_jenis_barang');
+        var el = document.getElementById('alert-edit-jenis_barang');
+        if (el) { el.textContent = ''; el.classList.remove('show'); }
+    }
 
-        success: function (response) {
+    // ===== BIND CLOSE BUTTONS =====
+    document.getElementById('cancel_modal_tambah_jenis_barang').addEventListener('click', closeTambah);
+    document.getElementById('cancel_modal_tambah_jenis_barang_footer').addEventListener('click', closeTambah);
+    document.getElementById('cancel_modal_edit_jenis_barang').addEventListener('click', closeEdit);
+    document.getElementById('cancel_modal_edit_jenis_barang_footer').addEventListener('click', closeEdit);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.message,
-                timer: 2000,
-                showConfirmButton: false
-            });
+    document.getElementById('modal_tambah_jenis_barang').addEventListener('click', function (e) {
+        if (e.target === this) closeTambah();
+    });
+    document.getElementById('modal_edit_jenis_barang').addEventListener('click', function (e) {
+        if (e.target === this) closeEdit();
+    });
 
-            // 🔥 langsung inject ke DataTable TANPA reload
-            let table = $('#table_id').DataTable();
+    // ===== DATATABLE =====
+    var table = $('#table_id').DataTable({ paging: true });
 
-            let newOpsi = canAdd
-                ? `<a href="javascript:void(0)"
-                       id="button_edit_jenis_barang"
-                       data-id="${response.data.id}"
-                       class="btn btn-warning btn-lg mb-2">
-                       <i class="far fa-edit"></i>
-                   </a>
-                   <a href="javascript:void(0)"
-                       id="button_hapus_jenis_barang"
-                       data-id="${response.data.id}"
-                       class="btn btn-danger btn-lg mb-2">
-                       <i class="fas fa-trash"></i>
-                   </a>`
-                : '-';
+    function renderOpsi(id) {
+        if (!canAdd) return '-';
+        return '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+            + '<button class="btn-tbl-edit btn_edit_jenis" data-id="' + id + '"><i class="far fa-edit"></i> Edit</button>'
+            + '<button class="btn-tbl-hapus btn_hapus_jenis" data-id="' + id + '"><i class="fas fa-trash"></i> Hapus</button>'
+            + '</div>';
+    }
 
-            table.row.add($(`
-                <tr id="index_${response.data.id}">
-                    <td></td>
-                    <td>${response.data.jenis_barang}</td>
-                    <td>${newOpsi}</td>
-                </tr>
-            `)).draw(false);
-
-            // update nomor otomatis
-            table.rows().every(function (rowIdx) {
-                $(this.node()).find('td:eq(0)').html(rowIdx + 1);
-            });
-
-            // reset form
-            $('#jenis_barang').val('');
-            $('#modal_tambah_jenis_barang').modal('hide');
-        },
-
-        error: function (xhr) {
-            console.log(xhr.responseText);
-
-            if (xhr.responseJSON?.jenis_barang) {
-                $('#alert-jenis_barang')
-                    .removeClass('d-none')
-                    .addClass('d-block')
-                    .html(xhr.responseJSON.jenis_barang[0]);
-            } else {
-                Swal.fire('Error', 'Gagal menambahkan data', 'error');
+    function reloadTable() {
+        $.ajax({
+            url: '/jenis-barang/get-data', type: 'GET', dataType: 'JSON',
+            success: function (response) {
+                table.clear();
+                var counter = 1;
+                $.each(response.data, function (key, value) {
+                    table.row.add($('<tr id="index_' + value.id + '">'
+                        + '<td>' + counter++ + '</td>'
+                        + '<td>' + value.jenis_barang + '</td>'
+                        + '<td>' + renderOpsi(value.id) + '</td>'
+                        + '</tr>')).draw(false);
+                });
             }
+        });
+    }
+
+    reloadTable();
+
+    // ===== BUKA MODAL TAMBAH =====
+    document.getElementById('button_tambah_jenis_barang') &&
+    document.getElementById('button_tambah_jenis_barang').addEventListener('click', function () {
+        closeTambah();
+        openModal('modal_tambah_jenis_barang');
+    });
+
+    // ===== STORE =====
+    $('body').on('click', '#store_jenis_barang', function (e) {
+        e.preventDefault();
+        var val   = document.getElementById('jenis_barang').value.trim();
+        var token = document.querySelector('meta[name="csrf-token"]').content;
+        var errEl = document.getElementById('alert-jenis_barang');
+        errEl.textContent = ''; errEl.classList.remove('show');
+
+        if (!val) {
+            Swal.fire({ icon: 'warning', title: 'Jenis barang tidak boleh kosong' });
+            return;
         }
 
+        $.ajax({
+            url: '/jenis-barang', type: 'POST',
+            headers: { 'X-CSRF-TOKEN': token },
+            data: { jenis_barang: val },
+            success: function (response) {
+                Swal.fire({ icon: 'success', title: response.message, timer: 2000, showConfirmButton: false });
+                closeTambah();
+                reloadTable();
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.jenis_barang) {
+                    errEl.textContent = xhr.responseJSON.jenis_barang[0];
+                    errEl.classList.add('show');
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Gagal menambahkan data' });
+                }
+            }
+        });
     });
+
+    // ===== BUKA MODAL EDIT =====
+    $('body').on('click', '.btn_edit_jenis', function () {
+        var jenis_id = $(this).data('id');
+        $.ajax({
+            url: '/jenis-barang/' + jenis_id + '/edit', type: 'GET',
+            success: function (response) {
+                document.getElementById('jenis_id').value          = response.data.id;
+                document.getElementById('edit_jenis_barang').value = response.data.jenis_barang;
+                var el = document.getElementById('alert-edit-jenis_barang');
+                if (el) { el.textContent = ''; el.classList.remove('show'); }
+                openModal('modal_edit_jenis_barang');
+            }
+        });
+    });
+
+    // ===== UPDATE =====
+    $('body').on('click', '#update_jenis_barang', function (e) {
+        e.preventDefault();
+        var jenis_id = document.getElementById('jenis_id').value;
+        var val      = document.getElementById('edit_jenis_barang').value;
+        var token    = document.querySelector('meta[name="csrf-token"]').content;
+        var errEl    = document.getElementById('alert-edit-jenis_barang');
+        errEl.textContent = ''; errEl.classList.remove('show');
+
+        var formData = new FormData();
+        formData.append('jenis_barang', val);
+        formData.append('_token', token);
+        formData.append('_method', 'PUT');
+
+        $.ajax({
+            url: '/jenis-barang/' + jenis_id, type: 'POST',
+            data: formData, contentType: false, processData: false,
+            success: function (response) {
+                Swal.fire({ icon: 'success', title: response.message, timer: 2000, showConfirmButton: false });
+                $('#index_' + response.data.id).find('td').eq(1).text(response.data.jenis_barang);
+                closeEdit();
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.jenis_barang) {
+                    errEl.textContent = xhr.responseJSON.jenis_barang[0];
+                    errEl.classList.add('show');
+                }
+            }
+        });
+    });
+
+    // ===== HAPUS =====
+    $('body').on('click', '.btn_hapus_jenis', function () {
+        var jenis_id = $(this).data('id');
+        var token    = document.querySelector('meta[name="csrf-token"]').content;
+        Swal.fire({
+            title: 'Apakah Kamu Yakin?', text: 'Data akan dihapus!', icon: 'warning',
+            showCancelButton: true, cancelButtonText: 'TIDAK', confirmButtonText: 'YA, HAPUS!'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/jenis-barang/' + jenis_id, type: 'DELETE',
+                    data: { _token: token },
+                    success: function (response) {
+                        Swal.fire({ icon: 'success', title: response.message, timer: 2000, showConfirmButton: false });
+                        reloadTable();
+                    }
+                });
+            }
+        });
+    });
+
 });
 </script>
-
-    <!-- Edit Data Jenis Barang -->
-    <script>
-        //Show modal edit
-        $('body').on('click', '#button_edit_jenis_barang', function() {
-            let jenis_id = $(this).data('id');
-
-            $.ajax({
-                url: `/jenis-barang/${jenis_id}/edit`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    $('#jenis_id').val(response.data.id);
-                    $('#edit_jenis_barang').val(response.data.jenis_barang);
-
-                    $('#modal_edit_jenis_barang').modal('show');
-                }
-            });
-        });
-
-        // Proses Update Data
-        $('#update').click(function(e) {
-            e.preventDefault();
-
-            let jenis_id = $('#jenis_id').val();
-            let jenis_barang = $('#edit_jenis_barang').val();
-            let token = $("meta[name='csrf-token']").attr('content');
-
-            let formData = new FormData();
-            formData.append('jenis_barang', jenis_barang);
-            formData.append('_token', token);
-            formData.append('_method', 'PUT');
-
-            $.ajax({
-                url: `/jenis-barang/${jenis_id}`,
-                type: "POST",
-                cache: false,
-                data: formData,
-                contentType: false,
-                processData: false,
-
-                success: function(response) {
-                    Swal.fire({
-                        type: 'success',
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: true,
-                        timer: 3000
-                    });
-
-                    let row = $(`#index_${response.data.id}`);
-                    let rowData = row.find('td');
-                    rowData.eq(1).text(response.data.jenis_barang);
-
-                    $('#modal_edit_jenis_barang').modal('hide');
-                },
-
-                error: function(error) {
-                    if (error.responseJSON && error.responseJSON.jenis_barang && error.responseJSON
-                        .jenis_barang[0]) {
-                        $('#alert-jenis_barang').removeClass('d-none');
-                        $('#alert-jenis_barang').addClass('d-block');
-
-                        $('#alert-jenis_barang').html(error.responseJSON.jenis_barang[0]);
-                    }
-                }
-            });
-        });
-    </script>
-
-    <!-- Hapus Data Barang -->
-    <script>
-        $('body').on('click', '#button_hapus_jenis_barang', function() {
-            let jenis_id = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
-
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini !",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/jenis-barang/${jenis_id}`,
-                        type: "DELETE",
-                        cache: false,
-                        data: {
-                            "_token": token
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: true,
-                                timer: 3000
-                            });
-                            $('#table_id').DataTable().clear().draw();
-
-                            $.ajax({
-                                url: "/jenis-barang/get-data",
-                                type: "GET",
-                                dataType: 'JSON',
-                                success: function(response) {
-                                    let counter = 1;
-                                    $('#table_id').DataTable().clear();
-                                    $.each(response.data, function(key, value) {
-                                        let opsiHapus = canAdd
-                                            ? `<a href="javascript:void(0)" id="button_edit_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                               <a href="javascript:void(0)" id="button_hapus_jenis_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>`
-                                            : '-';
-                                        let jenisBarang = `
-                                        <tr class="barang-row" id="index_${value.id}">
-                                            <td>${counter++}</td>
-                                            <td>${value.jenis_barang}</td>
-                                            <td>${opsiHapus}</td>
-                                        </tr>
-                                    `;
-                                        $('#table_id').DataTable().row.add(
-                                            $(jenisBarang)).draw(false);
-                                    });
-                                }
-                            });
-                        }
-                    })
-                }
-            });
-        });
-    </script>
-@endsection
+@endpush

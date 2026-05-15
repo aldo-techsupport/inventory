@@ -39,6 +39,7 @@
         </div>
     </div>
 
+@push('scripts')
     <script>
     // Permission flag dari server
     var canAdd = {{ $canAdd ? 'true' : 'false' }};
@@ -91,12 +92,6 @@
         // Init DataTable
         $('#table_id').DataTable({ paging: true });
 
-        // Init Select2
-        $('#barang_id, #supplier_id').select2({
-            dropdownParent: $('#modal_tambah_barangMasuk'),
-            width: '100%'
-        });
-
         // Set tanggal hari ini
         var today = new Date();
         var formattedDate = today.getFullYear() + '-'
@@ -111,12 +106,12 @@
         loadBarangMasuk();
 
         // ================= AUTOCOMPLETE BARANG =================
-        $('#barang_id').on('select2:select change', function () {
+        $('#barang_id').on('change', function () {
             let barang_id = $(this).val();
 
             if (!barang_id) {
                 $('#stok').val('');
-                $('#satuan_text').text('-');
+                document.getElementById('satuan_text').textContent = '-';
                 return;
             }
 
@@ -126,7 +121,7 @@
                 data: { barang_id: barang_id },
                 success: function (response) {
                     $('#stok').val(response.stok ?? 0);
-                    $('#satuan_text').text(response.satuan ?? '-');
+                    document.getElementById('satuan_text').textContent = response.satuan ?? '-';
                 },
                 error: function (xhr) {
                     console.error("Detail error:", xhr.responseText);
@@ -137,8 +132,25 @@
         // ================= SHOW MODAL TAMBAH =================
         $('body').on('click', '#button_tambah_barangMasuk', function () {
             $('#kode_transaksi').val(generateKodeTransaksi());
-            $('#modal_tambah_barangMasuk').modal('show');
+            document.getElementById('modal_tambah_barangMasuk').classList.add('active');
         });
+
+        // Close modal
+        document.getElementById('close_modal_barangMasuk').addEventListener('click', closeBarangMasukModal);
+        document.getElementById('cancel_modal_barangMasuk').addEventListener('click', closeBarangMasukModal);
+        document.getElementById('modal_tambah_barangMasuk').addEventListener('click', function(e) {
+            if (e.target === this) closeBarangMasukModal();
+        });
+
+        function closeBarangMasukModal() {
+            document.getElementById('modal_tambah_barangMasuk').classList.remove('active');
+            $('#barang_id').val('').trigger('change');
+            $('#supplier_id').val('').trigger('change');
+            $('#jumlah_masuk').val('');
+            $('#stok').val('');
+            document.getElementById('satuan_text').textContent = '-';
+            $('#kode_transaksi').val(generateKodeTransaksi());
+        }
 
         // ================= STORE DATA =================
         $(document).off('click', '#store_barangMasuk').on('click', '#store_barangMasuk', function (e) {
@@ -167,13 +179,8 @@
                 success: function (res) {
                     Swal.fire({ icon: 'success', title: res.message });
 
-                    $('#modal_tambah_barangMasuk').modal('hide');
+                    closeBarangMasukModal();
                     $('#store_barangMasuk').prop('disabled', false).text('Tambah');
-
-                    $('#barang_id').val('').trigger('change');
-                    $('#jumlah_masuk').val('');
-                    $('#stok').val('');
-                    $('#satuan_text').text('-');
 
                     loadBarangMasuk();
                 },
@@ -255,4 +262,5 @@
 
     });
     </script>
+@endpush
 @endsection

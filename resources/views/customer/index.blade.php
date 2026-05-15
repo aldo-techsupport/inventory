@@ -8,8 +8,8 @@
         <h1>Data Customer</h1>
         <div class="ml-auto">
             @if($canAdd)
-            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_customer"><i class="fa fa-plus"></i>
-                Customer</a>
+            <button class="btn btn-primary" id="button_tambah_customer"><i class="fa fa-plus"></i>
+                Customer</button>
             @endif
         </div>
     </div>
@@ -37,8 +37,8 @@
             </div>
         </div>
     </div>
-    <!-- Datatables Jquery -->
-   <script>
+@push('scripts')
+<script>
 $(document).ready(function() {
 
     var canAdd = {{ $canAdd ? 'true' : 'false' }};
@@ -84,10 +84,26 @@ $(document).ready(function() {
     loadData();
 
     // ================= MODAL TAMBAH =================
-// ================= MODAL TAMBAH =================
-$('body').on('click', '#button_tambah_customer', function() {
-    $('#modal_tambah_customer').modal('show');
-});
+    document.getElementById('button_tambah_customer').addEventListener('click', function () {
+        document.getElementById('modal_tambah_customer').classList.add('active');
+    });
+
+    function closeTambahModal() {
+        document.getElementById('modal_tambah_customer').classList.remove('active');
+        document.getElementById('customer').value = '';
+        document.getElementById('alamat').value = '';
+        document.getElementById('deskripsi').value = '';
+        document.getElementById('alert-customer').classList.remove('show');
+        document.getElementById('alert-alamat').classList.remove('show');
+    }
+
+    document.getElementById('close_modal_tambah_customer').addEventListener('click', closeTambahModal);
+    document.getElementById('cancel_modal_tambah_customer').addEventListener('click', closeTambahModal);
+
+    // Tutup modal saat klik overlay
+    document.getElementById('modal_tambah_customer').addEventListener('click', function (e) {
+        if (e.target === this) closeTambahModal();
+    });
     // ================= STORE =================
 // ================= STORE =================
 $('body').on('click', '#store_customer', function(e) {
@@ -113,15 +129,7 @@ $('body').on('click', '#store_customer', function(e) {
                 showConfirmButton: false
             });
 
-            $('#modal_tambah_customer').modal('hide');
-
-            $('#customer').val('');
-            $('#alamat').val('');
-            $('#deskripsi').val('');
-
-            $('#alert-customer').addClass('d-none');
-            $('#alert-alamat').addClass('d-none');
-
+            closeTambahModal();
             loadData();
         },
 error: function(err) {
@@ -229,4 +237,5 @@ error: function(err) {
 
 });
 </script>
+@endpush
 @endsection

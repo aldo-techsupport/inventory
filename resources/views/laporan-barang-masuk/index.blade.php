@@ -87,6 +87,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
 $(document).ready(function () {
 
@@ -114,11 +117,11 @@ $(document).ready(function () {
             data: {
                 tanggal_mulai   : $('#tanggal_mulai').val(),
                 tanggal_selesai : $('#tanggal_selesai').val(),
-                nama_barang     : $('#nama_barang').val(),      // siap kalau mau dipakai
-                kode_transaksi  : $('#kode_transaksi').val(),   // siap
-                supplier_id     : $('#supplier_id').val(),      // siap
-                jumlah_min      : $('#jumlah_min').val(),       // siap
-                jumlah_max      : $('#jumlah_max').val()        // siap
+                nama_barang     : $('#nama_barang').val(),
+                kode_transaksi  : $('#kode_transaksi').val(),
+                supplier_id     : $('#supplier_id').val(),
+                jumlah_min      : $('#jumlah_min').val(),
+                jumlah_max      : $('#jumlah_max').val()
             },
             success: function (response) {
                 table.clear();
@@ -173,21 +176,15 @@ $(document).ready(function () {
     // ===============================
     // PRINT PDF
     // ===============================
-  $('#print-barang-masuk').on('click', function () {
-
-    let params = $.param({
-        tanggal_mulai   : $('#tanggal_mulai').val(),
-        tanggal_selesai : $('#tanggal_selesai').val(),
-        nama_barang     : $('#nama_barang').val(),
-        supplier_id     : $('#supplier_id').val()
+    $('#print-barang-masuk').on('click', function () {
+        let params = $.param({
+            tanggal_mulai   : $('#tanggal_mulai').val(),
+            tanggal_selesai : $('#tanggal_selesai').val(),
+            nama_barang     : $('#nama_barang').val(),
+            supplier_id     : $('#supplier_id').val()
+        });
+        window.open('/laporan-barang-masuk/print-barang-masuk?' + params, '_blank');
     });
-
-    window.open(
-        '/laporan-barang-masuk/print-barang-masuk?' + params,
-        '_blank'
-    );
-});
-
 
     // ===============================
     // LOAD AWAL
@@ -195,5 +192,4 @@ $(document).ready(function () {
     loadData();
 });
 </script>
-
-@endsection
+@endpush

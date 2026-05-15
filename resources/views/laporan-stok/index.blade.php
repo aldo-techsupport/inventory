@@ -51,9 +51,12 @@
 </div>
 
 
-<!-- Dropdown -->
+@endsection
+
+@push('scripts')
 <script>
-$(document).ready(function() {
+$(document).ready(function () {
+
     var table = $('#table_id').DataTable({
         paging: true,
         ordering: true,
@@ -62,9 +65,8 @@ $(document).ready(function() {
 
     loadData('semua');
 
-    $('#opsi-laporan-stok').on('change', function(){
-        var selectedOption = $(this).val();
-        loadData(selectedOption);
+    $('#opsi-laporan-stok').on('change', function () {
+        loadData($(this).val());
     });
 
     function loadData(selectedOption) {
@@ -72,32 +74,28 @@ $(document).ready(function() {
             url: '/laporan-stok/get-data',
             type: 'GET',
             data: { opsi: selectedOption },
-            success: function(response){
+            success: function (response) {
                 table.clear().draw();
-
-                let counter = 1;
-                $.each(response, function(index, item) {
-                    var row = [
+                var counter = 1;
+                $.each(response, function (index, item) {
+                    table.row.add([
                         counter++,
                         item.kode_barang,
                         item.jenis_barang ?? '-',
                         item.nama_barang,
-                         // JENIS BARANG
                         item.stok
-                    ];
-                    table.row.add(row);
+                    ]);
                 });
                 table.draw();
             }
         });
     }
 
-    $('#print-stok').on('click', function(){
+    $('#print-stok').on('click', function () {
         var selectedOption = $('#opsi-laporan-stok').val();
         window.location.href = '/laporan-stok/print-stok?opsi=' + selectedOption;
     });
+
 });
 </script>
-
-
-@endsection
+@endpush

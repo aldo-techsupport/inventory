@@ -84,23 +84,23 @@
     </div>
 </div>
 
-<!-- Datatables Jquery -->
-<script>
-    $(document).ready(function(){
-        $('#table_id').DataTable({
-            paging: true,
-            autoWidth: false,
-            columnDefs: [
-                { width: '5%', targets: 0 },
-                { width: '10%', targets: 1 },
-                { width: '20%', targets: 2 },
-                { width: '20%', targets: 3 },
-                { width: '25%', targets: 4 },
-                { width: '15%', targets: 5 }
-            ]
-        });
-    })
-</script>
-
-
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#table_id').DataTable({
+        paging: true,
+        autoWidth: false,
+        columnDefs: [
+            { width: '5%',  targets: 0 },
+            { width: '10%', targets: 1 },
+            { width: '20%', targets: 2 },
+            { width: '20%', targets: 3 },
+            { width: '25%', targets: 4 },
+            { width: '15%', targets: 5 }
+        ]
+    });
+});
+</script>
+@endpush

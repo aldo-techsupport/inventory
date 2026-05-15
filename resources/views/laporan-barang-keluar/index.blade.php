@@ -77,7 +77,9 @@
     </div>
 </div>
 
-<!-- SCRIPT -->
+@endsection
+
+@push('scripts')
 <script>
 $(document).ready(function () {
 
@@ -104,38 +106,28 @@ $(document).ready(function () {
             url: '/laporan-barang-keluar/get-data',
             type: 'GET',
             data: {
-                tanggal_mulai: $('#tanggal_mulai').val(),
-                tanggal_selesai: $('#tanggal_selesai').val(),
-                nama_barang: $('#nama_barang').val(),
-                customer_id: $('#customer_id').val()
+                tanggal_mulai   : $('#tanggal_mulai').val(),
+                tanggal_selesai : $('#tanggal_selesai').val(),
+                nama_barang     : $('#nama_barang').val(),
+                customer_id     : $('#customer_id').val()
             },
             success: function (response) {
-
                 table.clear();
 
                 if (!response || response.length === 0) {
-                    table.row.add([
-                        '',
-                        'Tidak ada data',
-                        '',
-                        '',
-                        '',
-                        ''
-                    ]).draw();
+                    table.row.add(['', 'Tidak ada data', '', '', '', '']).draw();
                     return;
                 }
 
                 $.each(response, function (index, item) {
-
                     table.row.add([
                         index + 1,
                         item.kode_transaksi ?? '-',
                         item.tanggal_keluar ?? '-',
-                        item.barang ? item.barang.nama_barang : '-', // ✅ FIX
+                        item.barang ? item.barang.nama_barang : '-',
                         item.jumlah_keluar ?? 0,
                         item.customer ? item.customer.customer : '-'
                     ]);
-
                 });
 
                 table.draw();
@@ -144,16 +136,15 @@ $(document).ready(function () {
     }
 
     $('#print-barang-keluar').on('click', function () {
-        let url = '/laporan-barang-keluar/print-barang-keluar' +
-            '?tanggal_mulai=' + $('#tanggal_mulai').val() +
-            '&tanggal_selesai=' + $('#tanggal_selesai').val() +
-            '&nama_barang=' + $('#nama_barang').val() +
-            '&customer_id=' + $('#customer_id').val();
-
-        window.location.href = url;
+        let params = $.param({
+            tanggal_mulai   : $('#tanggal_mulai').val(),
+            tanggal_selesai : $('#tanggal_selesai').val(),
+            nama_barang     : $('#nama_barang').val(),
+            customer_id     : $('#customer_id').val()
+        });
+        window.open('/laporan-barang-keluar/print-barang-keluar?' + params, '_blank');
     });
 
 });
 </script>
-
-@endsection
+@endpush

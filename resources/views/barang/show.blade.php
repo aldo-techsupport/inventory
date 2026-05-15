@@ -1,328 +1,262 @@
-<div class="modal fade" id="modal_detail_barang" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-fullwidth">
-    <div class="modal-content modern-modal">
+{{-- ===================== MODAL DETAIL BARANG (Native CSS/JS) ===================== --}}
 
-      <!-- HEADER -->
-      <div class="modal-header clean-header">
-        <h4>Detail Barang</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
+<style>
+  /* ===== OVERLAY ===== */
+  #modal_detail_barang {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  #modal_detail_barang.active { display: flex; }
 
-      <!-- BODY -->
-      <div class="modal-body clean-body">
+  /* ===== DIALOG ===== */
+  #modal_detail_barang .modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    animation: detailIn 0.22s ease;
+    overflow: hidden;
+  }
+  @keyframes detailIn {
+    from { transform: translateY(-14px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
 
-        <div class="layout-wrap">
+  /* ===== HEADER ===== */
+  #modal_detail_barang .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+  }
+  #modal_detail_barang .modal-header h4 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1f1f33;
+  }
+  #modal_detail_barang .btn-close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #999;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  #modal_detail_barang .btn-close-modal:hover { color: #333; }
 
-          <!-- LEFT -->
-          <div class="left-panel">
+  /* ===== BODY ===== */
+  #modal_detail_barang .modal-body {
+    padding: 20px 22px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+  }
 
-            <div class="media-viewer">
+  /* ===== LAYOUT ===== */
+  #modal_detail_barang .layout-wrap {
+    display: flex;
+    gap: 32px;
+  }
+  @media (max-width: 768px) {
+    #modal_detail_barang .layout-wrap { flex-direction: column; gap: 20px; }
+  }
 
-              <!-- SLIDER -->
-              <div id="slider_images" class="slider-track"></div>
+  /* ===== LEFT PANEL ===== */
+  #modal_detail_barang .left-panel { flex: 1.2; }
 
-              <!-- NAV -->
-              <button class="nav prev" onclick="slideLeft()">‹</button>
-              <button class="nav next" onclick="slideRight()">›</button>
+  #modal_detail_barang .media-viewer {
+    width: 100%;
+    height: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background: #f3f4f6;
+  }
+  @media (max-width: 768px) {
+    #modal_detail_barang .media-viewer { height: 220px; }
+  }
 
-            </div>
+  #modal_detail_barang .slider-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.35s ease;
+  }
+  #modal_detail_barang .slider-img {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-            <!-- 🔥 THUMBNAIL (JS nanti isi) -->
-            <div id="slider_thumbs" class="slider-thumbs"></div>
+  /* Nav buttons */
+  #modal_detail_barang .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    border: none;
+    padding: 6px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  #modal_detail_barang .media-viewer:hover .nav-btn { opacity: 1; }
+  #modal_detail_barang .nav-btn.prev { left: 10px; }
+  #modal_detail_barang .nav-btn.next { right: 10px; }
 
+  /* Thumbnails */
+  #modal_detail_barang .slider-thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  #modal_detail_barang .slider-thumbs img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    opacity: 0.55;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    flex-shrink: 0;
+  }
+  #modal_detail_barang .slider-thumbs img.active {
+    opacity: 1;
+    border-color: #4f46e5;
+  }
+
+  /* ===== RIGHT PANEL ===== */
+  #modal_detail_barang .right-panel { flex: 1; }
+
+  #modal_detail_barang .title-main {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f1f33;
+    margin: 0 0 16px;
+  }
+
+  #modal_detail_barang .info-list div {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #444;
+  }
+  #modal_detail_barang .info-list div span:first-child { color: #888; }
+
+  /* Deskripsi */
+  #modal_detail_barang .desc-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin: 16px 0 8px;
+  }
+  #modal_detail_barang .desc-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #444;
+    max-height: 72px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  #modal_detail_barang .desc-text.open { max-height: 600px; overflow-y: auto; }
+  #modal_detail_barang .btn-readmore {
+    margin-top: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #6b7280;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #modal_detail_barang .btn-readmore:hover { background: #374151; }
+
+  /* Cetak PDF */
+  #modal_detail_barang .btn-cetak {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: background 0.2s;
+  }
+  #modal_detail_barang .btn-cetak:hover { background: #dc2626; color: #fff; }
+</style>
+
+<div id="modal_detail_barang" role="dialog" aria-modal="true" aria-labelledby="modal_detail_barang_title">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h4 id="modal_detail_barang_title">Detail Barang</h4>
+      <button type="button" class="btn-close-modal" id="close_modal_detail_barang" aria-label="Tutup">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="layout-wrap">
+
+        {{-- LEFT --}}
+        <div class="left-panel">
+          <div class="media-viewer">
+            <div id="slider_images" class="slider-track"></div>
+            <button class="nav-btn prev" onclick="slideLeft()">&#8249;</button>
+            <button class="nav-btn next" onclick="slideRight()">&#8250;</button>
           </div>
+          <div id="slider_thumbs" class="slider-thumbs"></div>
+        </div>
 
-          <!-- RIGHT -->
+        {{-- RIGHT --}}
         <div class="right-panel">
-<div class="info-list">
-         <a href="#" id="btnCetakPdf" class="btn btn-danger" style="border-bottom-right-radius: 20px; margin-bottom: 20px;">
-  <i class="fas fa-file-pdf"></i> Cetak PDF
-</a>
-            <h3 id="detail_nama_barang" class="title-main">-</h3>
+          <a href="#" id="btnCetakPdf" class="btn-cetak">
+            <i class="fas fa-file-pdf"></i> Cetak PDF
+          </a>
 
-            
+          <h3 id="detail_nama_barang" class="title-main">-</h3>
 
-  <div style="margin-top: 15px;">
-
-    <span>
-      <i class="fas fa-tags icon-info"></i>
-      Jenis :
-    </span>
-    <span id="detail_jenis"></span>
-  </div>
-
-  <div>
-    <span>
-      <i class="fas fa-balance-scale icon-info"></i>
-      Satuan :
-    </span>
-    <span id="detail_satuan"></span>
-  </div>
-
-  <div>
-    <span>
-      <i class="fas fa-boxes icon-info"></i>
-      Stok :
-    </span>
-    <span id="detail_stok"></span>
-  </div>
-
-  <div>
-    <span>
-      <i class="fas fa-exclamation-triangle icon-info"></i>
-      Min Stok :
-    </span>
-    <span id="detail_stok_minimum"></span>
-  </div>
-
-</div>
-<br>
-        <div class="desc-section">
-
-  <div class="label" style="font-size: 17px">
-    <i class="fas fa-align-left icon-label"></i>
-    Deskripsi :
-  </div>
-<br>
-  <div id="detail_deskripsi" class="desc-text"></div>
-<button id="btn_readmore" class="btn-readmore">
-    Read More
-</button>
-
-</div>
-
+          <div class="info-list">
+            <div><span><i class="fas fa-tags"></i> Jenis</span><span id="detail_jenis">-</span></div>
+            <div><span><i class="fas fa-balance-scale"></i> Satuan</span><span id="detail_satuan">-</span></div>
+            <div><span><i class="fas fa-boxes"></i> Stok</span><span id="detail_stok">-</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i> Min Stok</span><span id="detail_stok_minimum">-</span></div>
           </div>
 
+          <div class="desc-label"><i class="fas fa-align-left"></i> Deskripsi</div>
+          <div id="detail_deskripsi" class="desc-text">-</div>
+          <button id="btn_readmore" class="btn-readmore" style="display:none;">Read More</button>
         </div>
 
       </div>
     </div>
+
   </div>
 </div>
-
-<style>
-    :root {
-  --modal-max-width: 1500px;
-  --modal-padding: 20px;
-  --image-radius: 7px;
-}
-
-/* MODAL WIDTH */
-.modal-dialog.modal-fullwidth {
-  width: 85vw !important;
-  max-width: 1000px !important;
-  margin: auto;
-}
-
-/* MODAL */
-.modern-modal {
-  border-radius: 14px;
-  height: 88vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: #fff;
-}
-
-/* HEADER */
-.clean-header {
-  padding: 16px var(--modal-padding);
-  border-bottom: 1px solid #eee;
-}
-
-.clean-body {
-  flex: 1;
-  padding: var(--modal-padding);
-  overflow-y: auto; /* 🔥 FIX UTAMA */
-}
-
-/* LAYOUT */
-.layout-wrap {
-  display: flex;
-  gap: 40px;
-  height: 100%;
-}
-
-/* LEFT */
-.left-panel {
-  flex: 1.3;
-  display: flex;
-  flex-direction: column;
-}
-
-/* RIGHT */
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-right: 13px;
-}
-
-/* IMAGE */
-.media-viewer {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--image-radius);
-  overflow: hidden;
-  position: relative;
-  background: #f3f4f6;
-}
-
-/* 🔥 SLIDER FIX UTAMA */
-.slider-track {
-  display: flex;
-  height: 100%;
-  transition: transform 0.4s ease;
-}
-
-/* 🔥 INI YANG MENCEGAH SPLIT */
-.slider-img {
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* NAV */
-.nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.35);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  opacity: 0;
-  transition: 0.2s;
-}
-
-.media-viewer:hover .nav {
-  opacity: 1;
-}
-
-.prev { left: 10px; }
-.next { right: 10px; }
-
-/* TITLE */
-.title-main {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-/* INFO */
-.info-list div {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  font-size: 17px;
-}
-
-/* DESC */
-.desc-text {
-    max-height: 55px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    line-height: 1.5;
-}
-
-/* STATE OPEN */
-.desc-text.open {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 6px;
-     max-height: 1000px;
-}
-
-/* SCROLLBAR HALUS */
-.desc-text.open::-webkit-scrollbar {
-    width: 6px;
-}
-.desc-text.open::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
-}
-
-.btn-readmore {
-  margin-top: 12px;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #767681;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* hover */
-.btn-readmore:hover {
-  background: #0a0a0c;
-  color:  #ffffff;
-  border-color: #4f46e5;
-}
-
-/* active click */
-.btn-readmore:active {
-  transform: scale(0.97);
-}
-
-/* optional: full width */
-.btn-readmore.full {
-  width: 100%;
-}
-
-/* 🔥 THUMBNAIL */
-.slider-thumbs {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  overflow-x: auto;
-}
-
-.slider-thumbs img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-  opacity: 0.6;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.slider-thumbs img.active {
-  opacity: 1;
-  border: 2px solid #4f46e5;
-}
-
-/* FOOTER */
-.clean-footer {
-  border-top: 1px solid #eee;
-  padding: 14px var(--modal-padding);
-}
-
-/* MOBILE */
-@media (max-width: 992px) {
-
-  .modern-modal {
-    height: auto;
-  }
-
-  .layout-wrap {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .media-viewer {
-    height: 240px;
-  }
-
-  .title-main {
-    font-size: 18px;
-  }
-}
-</style>
-
