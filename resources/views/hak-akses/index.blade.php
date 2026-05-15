@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Hak Akses')
+
 @include('hak-akses.create')
 @include('hak-akses.edit')
 

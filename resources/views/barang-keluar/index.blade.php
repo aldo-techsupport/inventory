@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Barang Keluar')
+
 @include('barang-keluar.create')
 
 @section('content')

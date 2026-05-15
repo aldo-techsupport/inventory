@@ -1,346 +1,153 @@
 @extends('layouts.app')
 
+@section('page-title', 'Dashboard')
+
 @section('content')
-<!-- =====================================================
-     INVENTORY DASHBOARD — CLEAN PURE WHITE THEME FINAL
-     Author: DCLIQ System | Version 2025
-====================================================== -->
 
-<style>
-/* =====================================================
-   GLOBAL BASE STYLE
-====================================================== */
-html, body {
-  background: #ffffff !important;
-  color: #1e1e1e;
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
+{{-- ===== SUMMARY CARDS ===== --}}
+<div class="row g-3 mb-4">
 
-* {
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-}
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="small-box text-bg-primary">
+      <div class="inner">
+        <h3>{{ $barang }}</h3>
+        <p>Semua Barang</p>
+      </div>
+      <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z"/>
+        <path clip-rule="evenodd" fill-rule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z"/>
+      </svg>
+      <a href="/barang" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+        Lihat Detail <i class="bi bi-link-45deg"></i>
+      </a>
+    </div>
+  </div>
 
-/* =====================================================
-   HEADER SECTION (NO BACKGROUND CONTAINER)
-====================================================== */
-.section-header {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none;
-  padding: 0;
-  margin-bottom: 1.5rem;
-}
-.section-header h1 {
-  font-size: 1.9rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  letter-spacing: 0.4px;
-  margin: 0;
-}
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="small-box text-bg-success">
+      <div class="inner">
+        <h3>{{ $barangMasuk }}</h3>
+        <p>Barang Masuk</p>
+      </div>
+      <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path clip-rule="evenodd" fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z"/>
+      </svg>
+      <a href="/barang-masuk" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+        Lihat Detail <i class="bi bi-link-45deg"></i>
+      </a>
+    </div>
+  </div>
 
-/* =====================================================
-   SUMMARY CARDS
-====================================================== */
-.card-statistic-1 {
-  background: #ffffff;
-  border: 1px solid #ebedf2;
-  border-radius: 16px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.03);
-  display: flex;
-  align-items: center;
-  height: 120px;
-  transition: 0.3s ease;
-}
-.card-statistic-1:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.07);
-}
-.card-statistic-1 .card-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 14px;
-  background: #eef1ff;
-  color: #6574ff;
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-}
-.card-statistic-1 .card-wrap {
-  flex: 1;
-}
-.card-statistic-1 .card-header {
-  border: none;
-  background: transparent;
-  padding-bottom: 0;
-}
-.card-statistic-1 .card-header h4 {
-  color: #555;
-  font-size: 1rem;
-  margin: 0;
-  font-weight: 500;
-}
-.card-statistic-1 .card-body {
-  color: #111;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="small-box text-bg-warning">
+      <div class="inner">
+        <h3>{{ $barangKeluar }}</h3>
+        <p>Barang Keluar</p>
+      </div>
+      <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path clip-rule="evenodd" fill-rule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l4.5 4.5a.75.75 0 01-1.06 1.06l-3.22-3.22V15a.75.75 0 01-1.5 0V4.81L8.03 8.03a.75.75 0 01-1.06-1.06l4.5-4.5zM3 15.75a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5A.75.75 0 013 15.75z"/>
+      </svg>
+      <a href="/barang-keluar" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+        Lihat Detail <i class="bi bi-link-45deg"></i>
+      </a>
+    </div>
+  </div>
 
-/* =====================================================
-   GRAPH SECTION
-====================================================== */
-.graph-card {
-  width: 100%;
-  background: #ffffff;
-  border: 1px solid #e9ebf4;
-  border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-  margin-top: 2rem;
-  padding: 25px 30px;
-}
-.graph-card .card-header {
-  border: none;
-  background: transparent;
-  padding: 0;
-}
-.graph-card h4 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 20px;
-}
-.graph-container {
-  position: relative;
-  width: 100%;
-  height: 360px;
-}
-.graph-container canvas {
-  background: transparent;
-  border-radius: 12px;
-}
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="small-box text-bg-danger">
+      <div class="inner">
+        <h3>{{ $user }}</h3>
+        <p>Pengguna</p>
+      </div>
+      <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z"/>
+      </svg>
+      <a href="/data-pengguna" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+        Lihat Detail <i class="bi bi-link-45deg"></i>
+      </a>
+    </div>
+  </div>
 
-/* =====================================================
-   STOCK TABLE SECTION
-====================================================== */
-.stock-card {
-  background: #ffffff;
-  border: 1px solid #e9ebf4;
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-  margin-top: 2rem;
-  padding: 25px 30px;
-}
-.stock-card .card-header {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin-bottom: 10px;
-}
-.stock-card h4 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #222;
-}
-.table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  color: #333;
-  font-size: 0.9rem;
-}
-.table thead th {
-  background: #f4f6ff;
-  color: #444;
-  font-weight: 600;
-  border: none;
-  text-align: left;
-  padding: 10px 15px;
-  border-radius: 8px;
-}
-.table tbody tr {
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-  border-radius: 8px;
-  transition: 0.2s ease;
-}
-.table tbody tr:hover {
-  background: #fafbff;
-}
-.table td {
-  padding: 12px 15px;
-}
-.table td:first-child {
-  color: #555;
-  font-weight: 500;
-}
-.badge-warning {
-  background: linear-gradient(90deg, #ffe381, #ffce54);
-  color: #2b2b2b;
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-weight: 600;
-  font-size: 0.8rem;
-}
-
-/* =====================================================
-   FOOTER
-====================================================== */
-.main-footer {
-  text-align: center;
-  padding-top: 20px;
-  font-size: 0.9rem;
-  color: #777;
-  border-top: 1px solid #eee;
-  background: transparent;
-}
-
-/* =====================================================
-   RESPONSIVE OPTIMIZATION
-====================================================== */
-@media (max-width: 992px) {
-  .graph-container { height: 300px; }
-  .graph-card, .stock-card { padding: 18px 20px; }
-}
-@media (max-width: 768px) {
-  .graph-container { height: 220px; }
-  .section-header h1 { font-size: 1.4rem; }
-  .card-statistic-1 .card-body { font-size: 1.4rem; }
-  .card-statistic-1 .card-icon { width: 55px; height: 55px; font-size: 22px; margin: 14px; }
-  .graph-card, .stock-card { padding: 15px; margin-top: 1.2rem; }
-  .graph-card h4, .stock-card h4 { font-size: 1rem; }
-}
-@media (max-width: 576px) {
-  .card-statistic-1 { margin-bottom: 12px; height: auto; min-height: 90px; }
-  .card-statistic-1 .card-body { font-size: 1.3rem; }
-  .graph-container { height: 200px; }
-  .table { font-size: 0.82rem; }
-  .table thead th, .table td { padding: 8px 10px; }
-}
-</style>
-
-<!-- =====================================================
-     DASHBOARD MAIN CONTENT
-====================================================== -->
-<div class="section-header">
-  <h1>Dashboard</h1>
 </div>
+{{-- ===== END SUMMARY CARDS ===== --}}
 
-<!-- ===== SUMMARY CARDS ===== -->
-<div class="row">
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-    <div class="card card-statistic-1">
-      <div class="card-icon"><i class="fas fa-cubes"></i></div>
-      <div class="card-wrap">
-        <div class="card-header"><h4>Semua Barang</h4></div>
-        <div class="card-body">{{ $barang }}</div>
+{{-- ===== CHART ===== --}}
+<div class="row g-3 mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="bi bi-bar-chart-line me-2"></i>Grafik Barang Masuk &amp; Barang Keluar</h3>
       </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-    <div class="card card-statistic-1">
-      <div class="card-icon"><i class="fas fa-file-import"></i></div>
-      <div class="card-wrap">
-        <div class="card-header"><h4>Barang Masuk</h4></div>
-        <div class="card-body">{{ $barangMasuk }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-    <div class="card card-statistic-1">
-      <div class="card-icon"><i class="fas fa-file-export"></i></div>
-      <div class="card-wrap">
-        <div class="card-header"><h4>Barang Keluar</h4></div>
-        <div class="card-body">{{ $barangKeluar }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-    <div class="card card-statistic-1">
-      <div class="card-icon"><i class="far fa-user"></i></div>
-      <div class="card-wrap">
-        <div class="card-header"><h4>Pengguna</h4></div>
-        <div class="card-body">{{ $user }}</div>
+      <div class="card-body">
+        <canvas id="summaryChart" style="height:320px;max-height:320px;"></canvas>
       </div>
     </div>
   </div>
 </div>
+{{-- ===== END CHART ===== --}}
 
-<!-- ===== GRAPH SECTION ===== -->
-<div class="graph-card">
-  <div class="card-header">
-    <h4>Grafik Barang Masuk & Barang Keluar</h4>
-  </div>
-  <div class="card-body">
-    <div class="graph-container">
-      <canvas id="summaryChart"></canvas>
+{{-- ===== STOK MINIMUM ===== --}}
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Stok Mencapai Batas Minimum</h3>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:50px">No</th>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse ($barangMinimum as $item)
+              <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->kode_barang }}</td>
+                <td>{{ $item->nama_barang }}</td>
+                <td><span class="badge text-bg-warning">{{ $item->stok }}</span></td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="4" class="text-center text-muted py-3">Tidak ada barang dengan stok minimum</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- ===== STOCK SECTION ===== -->
-<div class="stock-card">
-  <div class="card-header">
-    <h4>Stok Mencapai Batas Minimum</h4>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Kode Barang</th>
-            <th>Nama Barang</th>
-            <th>Stok</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($barangMinimum as $barang)
-          <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $barang->kode_barang }}</td>
-            <td>{{ $barang->nama_barang }}</td>
-            <td><span class="badge badge-warning">{{ $barang->stok }}</span></td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ===== FOOTER ===== -->
-<footer class="main-footer">
-  &copy; {{ date('Y') }} PT Vendora Solusi Digital dan Digital Tekno. All rights reserved.
-</footer>
+{{-- ===== END STOK MINIMUM ===== --}}
 
 @endsection
 
-<!-- =====================================================
-     CHART.JS CONFIGURATION
-====================================================== -->
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const ctx = document.getElementById('summaryChart').getContext('2d');
-  const gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
-  gradientBlue.addColorStop(0, 'rgba(100, 120, 255, 0.7)');
-  gradientBlue.addColorStop(1, 'rgba(100, 120, 255, 0.05)');
-  const gradientRed = ctx.createLinearGradient(0, 0, 0, 400);
-  gradientRed.addColorStop(0, 'rgba(255, 99, 132, 0.6)');
-  gradientRed.addColorStop(1, 'rgba(255, 99, 132, 0.05)');
+
+  const gradientBlue = ctx.createLinearGradient(0, 0, 0, 320);
+  gradientBlue.addColorStop(0, 'rgba(13, 110, 253, 0.75)');
+  gradientBlue.addColorStop(1, 'rgba(13, 110, 253, 0.1)');
+
+  const gradientGreen = ctx.createLinearGradient(0, 0, 0, 320);
+  gradientGreen.addColorStop(0, 'rgba(25, 135, 84, 0.75)');
+  gradientGreen.addColorStop(1, 'rgba(25, 135, 84, 0.1)');
 
   new Chart(ctx, {
     type: 'bar',
     data: {
       labels: [
         @foreach($barangMasukData as $data)
-          '{{ date("F", strtotime($data->date)) }}',
+          '{{ date("M Y", strtotime($data->date)) }}',
         @endforeach
       ],
       datasets: [
@@ -348,25 +155,24 @@ document.addEventListener('DOMContentLoaded', function () {
           label: 'Barang Masuk',
           data: [
             @foreach($barangMasukData as $data)
-              '{{ $data->total }}',
+              {{ $data->total }},
             @endforeach
           ],
           backgroundColor: gradientBlue,
           borderRadius: 6,
-          borderSkipped: false
+          borderSkipped: false,
         },
         {
-  label: 'Barang Keluar',
-  data: [
-    @foreach($barangKeluarData as $data)
-      {{ $data->total }},
-    @endforeach
-  ],
-  backgroundColor: gradientRed,
-  borderRadius: 6,
-  borderSkipped: false
-}
-
+          label: 'Barang Keluar',
+          data: [
+            @foreach($barangKeluarData as $data)
+              {{ $data->total }},
+            @endforeach
+          ],
+          backgroundColor: gradientGreen,
+          borderRadius: 6,
+          borderSkipped: false,
+        }
       ]
     },
     options: {
@@ -375,30 +181,24 @@ document.addEventListener('DOMContentLoaded', function () {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: {
-            color: '#333',
-            boxWidth: 15,
-            font: { size: 13, family: 'Poppins' }
-          }
+          labels: { boxWidth: 14, font: { size: 13 } }
         },
         tooltip: {
           backgroundColor: 'rgba(20,20,20,0.9)',
           titleColor: '#fff',
           bodyColor: '#fff',
           padding: 10,
-          borderColor: '#6574ff',
-          borderWidth: 1,
           cornerRadius: 8
         }
       },
       scales: {
         x: {
-          grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
-          ticks: { color: '#666', font: { size: 12 } }
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { size: 12 } }
         },
         y: {
-          grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
-          ticks: { color: '#666', stepSize: 1, precision: 0 },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { stepSize: 1, precision: 0 },
           beginAtZero: true
         }
       }

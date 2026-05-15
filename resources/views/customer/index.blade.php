@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Data Customer')
+
 @include('customer.create')
 @include('customer.edit')
 

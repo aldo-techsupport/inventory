@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Ubah Password')
+
 @section('content')
 
 <div class="section-header">

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Data Supplier')
+
 @include('supplier.create')
 @include('supplier.edit')
 

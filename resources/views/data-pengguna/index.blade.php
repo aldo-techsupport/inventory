@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Data Pengguna')
+
 @include('data-pengguna.create')
 @include('data-pengguna.edit')
 

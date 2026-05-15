@@ -1,590 +1,428 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
+<!--begin::Head-->
 <head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>Inventory Gudang</title>
 
-  <!-- Anti-FOUC: Hide page until CSS loaded -->
-  <style>
-    /* Prevent modals from flashing on page load */
-    .modal:not(.show) { display: none !important; }
-    .modal.show { display: block !important; }
+  <!--begin::Fonts-->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    crossorigin="anonymous" media="print" onload="this.media='all'" />
+  <!--end::Fonts-->
 
-    /* === PAGE LOADER === */
+  <!--begin::OverlayScrollbars-->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+    crossorigin="anonymous" />
+  <!--end::OverlayScrollbars-->
+
+  <!--begin::Bootstrap Icons-->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    crossorigin="anonymous" />
+  <!--end::Bootstrap Icons-->
+
+  <!--begin::Font Awesome-->
+  <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css" />
+  <!--end::Font Awesome-->
+
+  <!--begin::AdminLTE-->
+  <link rel="stylesheet" href="/adminlte/css/adminlte.min.css" />
+  <!--end::AdminLTE-->
+
+  <!--begin::Select2-->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!--end::Select2-->
+
+  <!--begin::DataTables-->
+  <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.4.1/css/dataTables.dateTime.min.css" />
+  <!--end::DataTables-->
+
+  <!--begin::Lottie-->
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <!--end::Lottie-->
+
+  <style>
+    /* =====================================================
+       COMPATIBILITY LAYER — class lama tetap berfungsi
+       di AdminLTE 4
+    ====================================================== */
+
+    /* section-header: judul halaman + tombol aksi */
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+    .section-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--bs-body-color);
+    }
+    .section-header .ml-auto {
+      margin-left: auto !important;
+    }
+    @media (max-width: 576px) {
+      .section-header { flex-direction: column; align-items: flex-start; }
+      .section-header .ml-auto { margin-left: 0 !important; width: 100%; }
+      .section-header .ml-auto .btn { width: 100%; }
+      .section-header h1 { font-size: 1.15rem; }
+    }
+
+    /* card-statistic-1 (dashboard lama) */
+    .card-statistic-1 {
+      display: flex;
+      align-items: center;
+      background: var(--bs-body-bg);
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .card-statistic-1:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.1);
+    }
+    .card-statistic-1 .card-icon {
+      width: 68px; height: 68px;
+      border-radius: 0.5rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin: 16px; color: #fff;
+      background: var(--bs-primary);
+    }
+    .card-statistic-1 .card-wrap { flex: 1; padding: 8px 16px 8px 0; }
+    .card-statistic-1 .card-header {
+      border: none; background: transparent; padding: 0 0 2px;
+    }
+    .card-statistic-1 .card-header h4 {
+      color: var(--bs-secondary-color); font-size: .9rem; margin: 0; font-weight: 500;
+    }
+    .card-statistic-1 .card-body {
+      padding: 0; font-size: 1.75rem; font-weight: 700;
+      color: var(--bs-body-color);
+    }
+
+    /* badge-warning lama */
+    .badge-warning {
+      background: #ffc107; color: #212529;
+      border-radius: 0.375rem; padding: 4px 10px; font-weight: 600;
+    }
+
+    /* graph-card / stock-card lama */
+    .graph-card, .stock-card {
+      background: var(--bs-body-bg);
+      border: 1px solid var(--bs-border-color);
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      padding: 20px 24px;
+      margin-bottom: 1.25rem;
+    }
+    .graph-card h4, .stock-card h4 {
+      font-size: 1rem; font-weight: 600; margin-bottom: 16px;
+    }
+    .graph-container { position: relative; width: 100%; height: 340px; }
+
+    /* =====================================================
+       END COMPATIBILITY LAYER
+    ====================================================== */
+
+    /* Page Loader */
     #page-loader {
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255,255,255,0.92);
       backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-
     #page-loader.hide {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
     #page-loader-inner {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
     }
-
     #page-loader-text {
       font-size: 0.9rem;
-      color: #6e7eff;
+      color: #0d6efd;
       font-weight: 600;
       letter-spacing: 0.5px;
       margin: 0;
       animation: pulse-text 1.2s ease-in-out infinite;
     }
-
     @keyframes pulse-text {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.4; }
     }
 
-    /* === GLOBAL THEME === */
-    body {
-      background: linear-gradient(180deg, #f7f9ff 0%, #f1f4ff 100%);
-      color: #2c2c2c;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 400;
-      letter-spacing: 0.2px;
-    }
+    /* Prevent modal flash */
+    .modal:not(.show) { display: none !important; }
+    .modal.show       { display: block !important; }
 
-    /* === NAVBAR === */
-    .navbar-bg {
-      background: #ffffff !important;
-      height: 70px !important;
-      box-shadow: none !important;
+    /* Select2 fix inside AdminLTE 4 */
+    .select2-container--default .select2-selection--single {
+      height: calc(1.5em + 0.75rem + 2px);
+      padding: 0.375rem 0.75rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.375rem;
     }
-
-    .navbar {
-      background: #ffffff;
-      border-bottom: 1px solid #e6e9f3;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-      height: 70px;
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 1.5;
+      color: #212529;
+      padding: 0;
     }
-
-    .navbar .nav-link {
-      color: #333 !important;
-      font-weight: 500;
-    }
-
-    .navbar .nav-link:hover {
-      color: #2e38ff !important;
-    }
-
-    .navbar .dropdown-menu {
-      border-radius: 10px;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
-      border: none;
-    }
-
-    /* === SIDEBAR === */
-    .main-sidebar {
-      background: #fdfdff;
-      border-right: 1px solid #e5e8f3;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
-    }
-
-    .sidebar-brand a {
-      font-weight: 700;
-      color: #1d1f2c;
-      letter-spacing: 0.5px;
-    }
-
-    .sidebar-menu li a {
-      color: #555;
-      border-radius: 10px;
-      padding: 10px 16px;
-      margin-bottom: 4px;
-      transition: all 0.25s ease;
-      font-weight: 500;
-    }
-
-    .sidebar-menu li a.active,
-    .sidebar-menu li a:hover {
-      background: linear-gradient(90deg, rgba(130,138,255,0.2), rgba(210,216,255,0.4));
-      color: #2b2b2b !important;
-      box-shadow: inset 2px 0 0 #6e7eff;
-      transform: translateX(2px);
-    }
-
-    .sidebar-menu .menu-header {
-      color: #8c90a8;
-      font-size: 0.75rem;
-      letter-spacing: 0.6px;
-      margin-top: 15px;
-    }
-
-    /* === MAIN CONTENT AREA === */
-    .main-content {
-      background: #f8faff;
-      padding-top: 85px;
-    }
-
-    /* === SECTION === */
-    .section {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* === DASHBOARD HEADER === */
-    .section .section-header {
-      background: linear-gradient(90deg, #f5f7ff 0%, #f0f4ff 100%);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    }
-    .section .section-header h1 {
-      color: #1f1f33;
-      font-weight: 700;
-    }
-
-    /* === DASHBOARD CARDS === */
-    .card {
-      border: none;
-      border-radius: 16px;
-      background: #ffffff;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(110, 130, 255, 0.12);
-    }
-
-    .card .card-header {
-      border-bottom: none;
-      background: transparent;
-      color: #4a4a4a;
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    /* === STATISTIC CARDS === */
-    .card-statistic-1 {
-      display: flex;
-      align-items: center;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .card-statistic-1:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(120, 130, 255, 0.15);
-    }
-
-    .card-statistic-1 .card-icon {
-      width: 70px;
-      height: 70px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      margin: 16px;
-      color: #fff;
-    }
-
-    .card-statistic-1 .card-wrap {
-      padding: 10px 20px;
-    }
-
-    .card-statistic-1 .card-header h4 {
-      color: #7a7a7a;
-      font-weight: 500;
-    }
-
-    .card-statistic-1 .card-body {
-      color: #1f1f1f;
-      font-weight: 700;
-      font-size: 1.8rem;
-    }
-
-    .bg-primary {
-      background: linear-gradient(135deg, #6e73ff, #8c9aff) !important;
-    }
-    .bg-danger {
-      background: linear-gradient(135deg, #ff5f6d, #ff7a85) !important;
-    }
-    .bg-warning {
-      background: linear-gradient(135deg, #ffca58, #ffb347) !important;
-    }
-    .bg-success {
-      background: linear-gradient(135deg, #54e08e, #33d4a0) !important;
-    }
-
-    /* === TABLE === */
-    .table {
-      border-radius: 10px;
-      overflow: hidden;
-      color: #333;
-    }
-    .table thead {
-      background: #f1f3ff;
-      color: #444;
-      font-weight: 600;
-    }
-    .table tbody tr:hover {
-      background: rgba(150, 160, 255, 0.08);
-    }
-
-    /* === BADGES === */
-    .badge-warning {
-      background: linear-gradient(90deg, #ffcd4f, #f7b74a);
-      color: #3a3a3a;
-      border-radius: 8px;
-      font-weight: 600;
-      padding: 6px 10px;
-    }
-
-    /* === FOOTER === */
-    .main-footer {
-      background: #f8faff;
-      border-top: 1px solid #e5e8f3;
-      color: #666;
-      font-size: 0.9rem;
-      padding: 20px;
-      text-align: center;
-    }
-
-    /* === SCROLLBAR === */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #b8bfff, #a6adff);
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f0f3ff;
-    }
-
-    /* === RESPONSIVE === */
-    @media (max-width: 768px) {
-      .card-statistic-1 .card-icon {
-        width: 55px;
-        height: 55px;
-        font-size: 22px;
-      }
-      .card-statistic-1 .card-body {
-        font-size: 1.4rem;
-      }
-    }
-
-    /* === SEARCH ELEMENT FIX === */
-    .search-element {
-      position: relative;
-      display: flex;
-      align-items: center;
-      max-width: 300px;
-    }
-
-    .search-element input.form-control {
-      border-radius: 20px 0 0 20px !important;
-      border-right: none !important;
-      height: 38px;
-      padding-right: 0;
-      width: 250px !important;
-    }
-
-    .search-element .btn {
-      border-radius: 0 20px 20px 0 !important;
-      border: 1px solid #ced4da;
-      border-left: none !important;
-      height: 38px;
-      padding: 0 14px;
-      background: #fff;
-      color: #555;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .search-element .btn:hover {
-      background: #f0f3ff;
-      color: #2e38ff;
-    }
-
-    /* === SECTION HEADER RESPONSIVE === */
-    .section-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-header h1 {
-      font-size: 1.4rem;
-      margin: 0;
-    }
-    .section-header .ml-auto {
-      margin-left: auto !important;
-    }
-
-    @media (max-width: 576px) {
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .section-header .ml-auto {
-        margin-left: 0 !important;
-        width: 100%;
-      }
-      .section-header .ml-auto .btn {
-        width: 100%;
-        text-align: center;
-      }
-      .section-header h1 {
-        font-size: 1.2rem;
-      }
-
-      /* Navbar search hidden on mobile */
-      .search-element {
-        display: none;
-      }
-
-      /* Main content padding adjustment */
-      .main-content {
-        padding-top: 75px;
-      }
-
-      /* Card padding on mobile */
-      .card .card-body {
-        padding: 12px;
-      }
-
-      /* Table action buttons wrap */
-      .table td .btn {
-        margin-bottom: 4px;
-      }
-
-      /* Filter form buttons full width on mobile */
-      .btn-filter-group {
-        width: 100%;
-        display: flex;
-        gap: 8px;
-      }
-      .btn-filter-group .btn {
-        flex: 1;
-      }
-    }
-
-    @media (max-width: 768px) {
-      /* Navbar brand text shorter */
-      .sidebar-brand a {
-        font-size: 0.85rem;
-      }
-
-      /* Table responsive text size */
-      .table {
-        font-size: 0.82rem;
-      }
-
-      /* Modal full width on mobile */
-      .modal-dialog {
-        margin: 0.5rem;
-      }
-      .modal-dialog.modal-lg,
-      .modal-dialog.modal-xl {
-        max-width: calc(100% - 1rem) !important;
-      }
-
-      /* Graph container height */
-      .graph-container {
-        height: 220px !important;
-      }
-
-      /* Stock card padding */
-      .stock-card,
-      .graph-card {
-        padding: 15px;
-      }
-    }
-
-    @media (max-width: 992px) {
-      /* Section header font */
-      .section-header h1 {
-        font-size: 1.3rem;
-      }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 100%;
     }
   </style>
+</head>
+<!--end::Head-->
 
-  <!-- Lottie Player -->
-  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<!--begin::Body-->
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 
-  <!-- General CSS Files -->
-  <link rel="stylesheet" href="/assets/modules/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css">
-
-
-  <!-- CSS Libraries -->
-
-  <!-- Template CSS -->
-
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
-
-  <!-- Select2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
-  <!-- Datatable Jquery -->
-  <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-
-  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.4.1/css/dataTables.dateTime.min.css">
-
-  <!-- Start GA -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-94034622-3');
-  </script>
-
-
-<!-- /END GA --></head>
-
-<body>
-
-  <!-- ===== PAGE LOADING OVERLAY ===== -->
+  <!--begin::Page Loader-->
   <div id="page-loader">
     <div id="page-loader-inner">
       <dotlottie-player
         src="https://lottie.host/1fbb029c-6a9b-456d-affe-2619a4a245cf/OYMAUYue59.lottie"
         background="transparent"
         speed="1"
-        style="width: 180px; height: 180px;"
-        autoplay
-        loop>
+        style="width:180px;height:180px;"
+        autoplay loop>
       </dotlottie-player>
       <p id="page-loader-text">Memuat...</p>
     </div>
   </div>
-  <!-- ===== END PAGE LOADING OVERLAY ===== -->
-  <div id="app">
-    <div class="main-wrapper main-wrapper-1">
-      <div class="navbar-bg"></div>
-      <nav class="navbar navbar-expand-lg main-navbar">
-        <form class="form-inline mr-auto">
-          <ul class="navbar-nav mr-3">
-            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
-            <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
-          </ul>
-          <div class="search-element">
-            <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250">
-            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-            <div class="search-backdrop"></div>
-          </div>
-        </form>
-        <ul class="navbar-nav navbar-right">
+  <!--end::Page Loader-->
 
+  <!--begin::App Wrapper-->
+  <div class="app-wrapper">
 
-          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-            <img alt="image" src="/assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()->name }}</div></a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a href="/ubah-password" class="dropdown-item has-icon">
-                <i class="fa fa-sharp fa-solid fa-lock"></i> Ubah Password
-              </a>
-              <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{{ route('logout') }}"
-                    onclick="event.preventDefault();
-                                Swal.fire({
-                                    title: 'Konfirmasi Keluar',
-                                    text: 'Apakah Anda yakin ingin keluar?',
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Ya, Keluar!'
-                                  }).then((result) => {
-                                    if (result.isConfirmed) {
-                                      document.getElementById('logout-form').submit();
-                                    }
-                                  });">
-                               <i class="fas fa-sign-out-alt"></i> {{ __('Keluar') }}
-                              </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
-                  </a>
-            </div>
+    <!--begin::Header-->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+
+        <!--begin::Start Navbar Links-->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
           </li>
         </ul>
-      </nav>
-      <div class="main-sidebar sidebar-style-2">
-        <aside id="sidebar-wrapper">
+        <!--end::Start Navbar Links-->
 
-          <div class="sidebar-brand">
-            <a href="/">INVENTORY GUDANG</a>
-          </div>
+        <!--begin::End Navbar Links-->
+        <ul class="navbar-nav ms-auto">
 
-          <ul class="sidebar-menu">
+          <!--begin::Fullscreen-->
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display:none"></i>
+            </a>
+          </li>
+          <!--end::Fullscreen-->
+
+          <!--begin::User Menu-->
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img src="/adminlte/assets/img/user2-160x160.jpg"
+                class="user-image rounded-circle shadow" alt="User" />
+              <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <!--begin::User Image-->
+              <li class="user-header text-bg-primary">
+                <img src="/adminlte/assets/img/user2-160x160.jpg"
+                  class="rounded-circle shadow" alt="User" />
+                <p>
+                  {{ auth()->user()->name }}
+                  <small>{{ auth()->user()->email }}</small>
+                </p>
+              </li>
+              <!--end::User Image-->
+              <!--begin::Menu Footer-->
+              <li class="user-footer">
+                <a href="/ubah-password" class="btn btn-outline-secondary btn-sm">
+                  <i class="bi bi-lock me-1"></i> Ubah Password
+                </a>
+                <a href="{{ route('logout') }}" class="btn btn-outline-danger btn-sm float-end"
+                  onclick="event.preventDefault();
+                    Swal.fire({
+                      title: 'Konfirmasi Keluar',
+                      text: 'Apakah Anda yakin ingin keluar?',
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#0d6efd',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Ya, Keluar!'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                      }
+                    });">
+                  <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                  @csrf
+                </form>
+              </li>
+              <!--end::Menu Footer-->
+            </ul>
+          </li>
+          <!--end::User Menu-->
+
+        </ul>
+        <!--end::End Navbar Links-->
+      </div>
+    </nav>
+    <!--end::Header-->
+
+    <!--begin::Sidebar-->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+
+      <!--begin::Sidebar Brand-->
+      <div class="sidebar-brand">
+        <a href="/" class="brand-link">
+          <img src="/adminlte/assets/img/AdminLTELogo.png"
+            alt="Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Inventory Gudang</span>
+        </a>
+      </div>
+      <!--end::Sidebar Brand-->
+
+      <!--begin::Sidebar Wrapper-->
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column"
+            data-lte-toggle="treeview"
+            role="navigation"
+            aria-label="Main navigation"
+            data-accordion="false">
+
             @php $user = auth()->user(); @endphp
 
-            {{-- Superadmin: tampilkan semua menu --}}
+            {{-- ===== SUPERADMIN: tampilkan semua menu ===== --}}
             @if ($user->isSuperAdmin())
-              <li class="sidebar-item">
-                <a class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}" href="/">
-                  <i class="fas fa-fire"></i> <span class="align-middle">Dashboard</span>
+
+              <li class="nav-item">
+                <a href="/" class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-speedometer2"></i>
+                  <p>Dashboard</p>
                 </a>
               </li>
 
-              <li class="menu-header">DATA MASTER</li>
-                <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}" data-toggle="dropdown"><i class="fas fa-thin fa-cubes"></i><span>Data Barang</span></a>
-                  <ul class="dropdown-menu">
-                    <li><a class="nav-link {{ Request::is('barang') ? 'active' : '' }}" href="/barang"><i class="fa fa-solid fa-circle fa-xs"></i> Nama Barang</a></li>
-                    <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}" href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a></li>
-                  </ul>
-                </li>
-                <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('supplier') || Request::is('customer') ? 'active' : '' }}" data-toggle="dropdown"><i class="fa fa-sharp fa-solid fa-building"></i><span>Perusahaan</span></a>
-                  <ul class="dropdown-menu">
-                    <li><a class="nav-link {{ Request::is('supplier') ? 'active' : '' }}" href="/supplier"><i class="fa fa-solid fa-circle fa-xs"></i> Supplier</a></li>
-                    <li><a class="nav-link {{ Request::is('customer') ? 'active' : '' }}" href="/customer"><i class="fa fa-solid fa-circle fa-xs"></i> Customer</a></li>
-                  </ul>
-                </li>
+              <li class="nav-header">DATA MASTER</li>
 
-              <li class="menu-header">TRANSAKSI</li>
-              <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-up"></i> <span>Barang Keluar</span></a></li>
-              <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-down"></i><span>Barang Masuk</span></a></li>
+              <li class="nav-item {{ Request::is('barang') || Request::is('jenis-barang') ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-boxes"></i>
+                  <p>Data Barang <i class="nav-arrow bi bi-chevron-right"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/barang" class="nav-link {{ Request::is('barang') ? 'active' : '' }}">
+                      <i class="nav-icon bi bi-circle"></i><p>Nama Barang</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/jenis-barang" class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}">
+                      <i class="nav-icon bi bi-circle"></i><p>Jenis Barang</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
-              <li class="menu-header">LAPORAN</li>
-              <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
-              <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
-              <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
+              <li class="nav-item {{ Request::is('supplier') || Request::is('customer') ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ Request::is('supplier') || Request::is('customer') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-building"></i>
+                  <p>Perusahaan <i class="nav-arrow bi bi-chevron-right"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/supplier" class="nav-link {{ Request::is('supplier') ? 'active' : '' }}">
+                      <i class="nav-icon bi bi-circle"></i><p>Supplier</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/customer" class="nav-link {{ Request::is('customer') ? 'active' : '' }}">
+                      <i class="nav-icon bi bi-circle"></i><p>Customer</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
-              <li class="menu-header">MANAJEMEN USER</li>
-              <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="/data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
-              <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="/hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
-              <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="/aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
+              <li class="nav-header">TRANSAKSI</li>
+
+              <li class="nav-item">
+                <a href="/barang-masuk" class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-arrow-down-circle"></i><p>Barang Masuk</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/barang-keluar" class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-arrow-up-circle"></i><p>Barang Keluar</p>
+                </a>
+              </li>
+
+              <li class="nav-header">LAPORAN</li>
+
+              <li class="nav-item">
+                <a href="/laporan-stok" class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-file-earmark-text"></i><p>Stok</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/laporan-barang-masuk" class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-file-earmark-arrow-down"></i><p>Barang Masuk</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/laporan-barang-keluar" class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-file-earmark-arrow-up"></i><p>Barang Keluar</p>
+                </a>
+              </li>
+
+              <li class="nav-header">MANAJEMEN USER</li>
+
+              <li class="nav-item">
+                <a href="/data-pengguna" class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-people"></i><p>Data Pengguna</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/hak-akses" class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-shield-lock"></i><p>Hak Akses / Role</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/aktivitas-user" class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-clock-history"></i><p>Aktivitas User</p>
+                </a>
+              </li>
 
             @else
-              {{-- Non-superadmin: tampilkan menu berdasarkan permission --}}
+              {{-- ===== NON-SUPERADMIN: berdasarkan permission ===== --}}
 
               @if ($user->canViewMenu('dashboard'))
-              <li class="sidebar-item">
-                <a class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}" href="/">
-                  <i class="fas fa-fire"></i> <span class="align-middle">Dashboard</span>
+              <li class="nav-item">
+                <a href="/" class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}">
+                  <i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p>
                 </a>
               </li>
               @endif
@@ -597,34 +435,53 @@
               @endphp
 
               @if ($showDataMaster)
-              <li class="menu-header">DATA MASTER</li>
+              <li class="nav-header">DATA MASTER</li>
+
                 @if ($user->canViewMenu('barang') || $user->canViewMenu('jenis-barang'))
-                <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}" data-toggle="dropdown">
-                    <i class="fas fa-thin fa-cubes"></i><span>Data Barang</span>
+                <li class="nav-item {{ Request::is('barang') || Request::is('jenis-barang') ? 'menu-open' : '' }}">
+                  <a href="#" class="nav-link {{ Request::is('barang') || Request::is('jenis-barang') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-boxes"></i>
+                    <p>Data Barang <i class="nav-arrow bi bi-chevron-right"></i></p>
                   </a>
-                  <ul class="dropdown-menu">
+                  <ul class="nav nav-treeview">
                     @if ($user->canViewMenu('barang'))
-                    <li><a class="nav-link {{ Request::is('barang') ? 'active' : '' }}" href="/barang"><i class="fa fa-solid fa-circle fa-xs"></i> Nama Barang</a></li>
+                    <li class="nav-item">
+                      <a href="/barang" class="nav-link {{ Request::is('barang') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i><p>Nama Barang</p>
+                      </a>
+                    </li>
                     @endif
                     @if ($user->canViewMenu('jenis-barang'))
-                    <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}" href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a></li>
+                    <li class="nav-item">
+                      <a href="/jenis-barang" class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i><p>Jenis Barang</p>
+                      </a>
+                    </li>
                     @endif
                   </ul>
                 </li>
                 @endif
 
                 @if ($user->canViewMenu('supplier') || $user->canViewMenu('customer'))
-                <li class="dropdown">
-                  <a href="#" class="nav-link has-dropdown {{ Request::is('supplier') || Request::is('customer') ? 'active' : '' }}" data-toggle="dropdown">
-                    <i class="fa fa-sharp fa-solid fa-building"></i><span>Perusahaan</span>
+                <li class="nav-item {{ Request::is('supplier') || Request::is('customer') ? 'menu-open' : '' }}">
+                  <a href="#" class="nav-link {{ Request::is('supplier') || Request::is('customer') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-building"></i>
+                    <p>Perusahaan <i class="nav-arrow bi bi-chevron-right"></i></p>
                   </a>
-                  <ul class="dropdown-menu">
+                  <ul class="nav nav-treeview">
                     @if ($user->canViewMenu('supplier'))
-                    <li><a class="nav-link {{ Request::is('supplier') ? 'active' : '' }}" href="/supplier"><i class="fa fa-solid fa-circle fa-xs"></i> Supplier</a></li>
+                    <li class="nav-item">
+                      <a href="/supplier" class="nav-link {{ Request::is('supplier') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i><p>Supplier</p>
+                      </a>
+                    </li>
                     @endif
                     @if ($user->canViewMenu('customer'))
-                    <li><a class="nav-link {{ Request::is('customer') ? 'active' : '' }}" href="/customer"><i class="fa fa-solid fa-circle fa-xs"></i> Customer</a></li>
+                    <li class="nav-item">
+                      <a href="/customer" class="nav-link {{ Request::is('customer') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i><p>Customer</p>
+                      </a>
+                    </li>
                     @endif
                   </ul>
                 </li>
@@ -632,135 +489,202 @@
               @endif
 
               @if ($showTransaksi)
-              <li class="menu-header">TRANSAKSI</li>
+              <li class="nav-header">TRANSAKSI</li>
                 @if ($user->canViewMenu('barang-masuk'))
-                <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a></li>
+                <li class="nav-item">
+                  <a href="/barang-masuk" class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-arrow-down-circle"></i><p>Barang Masuk</p>
+                  </a>
+                </li>
                 @endif
                 @if ($user->canViewMenu('barang-keluar'))
-                <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i> <span>Barang Keluar</span></a></li>
+                <li class="nav-item">
+                  <a href="/barang-keluar" class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-arrow-up-circle"></i><p>Barang Keluar</p>
+                  </a>
+                </li>
                 @endif
               @endif
 
               @if ($showLaporan)
-              <li class="menu-header">LAPORAN</li>
+              <li class="nav-header">LAPORAN</li>
                 @if ($user->canViewMenu('laporan-stok'))
-                <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
+                <li class="nav-item">
+                  <a href="/laporan-stok" class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-file-earmark-text"></i><p>Stok</p>
+                  </a>
+                </li>
                 @endif
                 @if ($user->canViewMenu('laporan-barang-masuk'))
-                <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
+                <li class="nav-item">
+                  <a href="/laporan-barang-masuk" class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-file-earmark-arrow-down"></i><p>Barang Masuk</p>
+                  </a>
+                </li>
                 @endif
                 @if ($user->canViewMenu('laporan-barang-keluar'))
-                <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a></li>
+                <li class="nav-item">
+                  <a href="/laporan-barang-keluar" class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-file-earmark-arrow-up"></i><p>Barang Keluar</p>
+                  </a>
+                </li>
                 @endif
               @endif
 
               @if ($showManajemen)
-              <li class="menu-header">MANAJEMEN USER</li>
+              <li class="nav-header">MANAJEMEN USER</li>
                 @if ($user->canViewMenu('data-pengguna'))
-                <li><a class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}" href="/data-pengguna"><i class="fa fa-solid fa-users"></i><span>Data Pengguna</span></a></li>
+                <li class="nav-item">
+                  <a href="/data-pengguna" class="nav-link {{ Request::is('data-pengguna') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-people"></i><p>Data Pengguna</p>
+                  </a>
+                </li>
                 @endif
                 @if ($user->canViewMenu('hak-akses'))
-                <li><a class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}" href="/hak-akses"><i class="fa fa-solid fa-user-lock"></i><span>Hak Akses/Role</span></a></li>
+                <li class="nav-item">
+                  <a href="/hak-akses" class="nav-link {{ Request::is('hak-akses') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-shield-lock"></i><p>Hak Akses / Role</p>
+                  </a>
+                </li>
                 @endif
                 @if ($user->canViewMenu('aktivitas-user'))
-                <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="/aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas User</span></a></li>
+                <li class="nav-item">
+                  <a href="/aktivitas-user" class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-clock-history"></i><p>Aktivitas User</p>
+                  </a>
+                </li>
                 @endif
               @endif
 
             @endif
+
           </ul>
-        </aside>
+        </nav>
       </div>
+      <!--end::Sidebar Wrapper-->
 
-      <!-- Main Content -->
-      <div class="main-content">
-        <section class="section">
+    </aside>
+    <!--end::Sidebar-->
 
-            @yield('content')
-          <div class="section-body">
+    <!--begin::App Main-->
+    <main class="app-main">
+
+      <!--begin::App Content Header-->
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">@yield('page-title', 'Dashboard')</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">@yield('page-title', 'Dashboard')</li>
+              </ol>
+            </div>
           </div>
-        </section>
+        </div>
       </div>
-<footer class="main-footer">
-    <div class="footer-left">
-        &copy; {{ date('Y') }} PT Vendora Solusi Digital dan Digital Tekno. All rights reserved.
-    </div>
-    <div class="footer-right">
+      <!--end::App Content Header-->
 
-    </div>
-</footer>
+      <!--begin::App Content-->
+      <div class="app-content">
+        <div class="container-fluid">
+          @yield('content')
+        </div>
+      </div>
+      <!--end::App Content-->
 
-    </div>
+    </main>
+    <!--end::App Main-->
+
+    <!--begin::Footer-->
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">
+        <strong>Inventory Gudang</strong>
+      </div>
+      <strong>
+        &copy; {{ date('Y') }} PT Vendora Solusi Digital dan Digital Tekno.
+      </strong>
+      All rights reserved.
+    </footer>
+    <!--end::Footer-->
+
   </div>
+  <!--end::App Wrapper-->
 
+  <!--begin::Scripts-->
 
-
-  <!-- General JS Scripts -->
+  <!--begin::jQuery-->
   <script src="/assets/modules/jquery.min.js"></script>
-  <script src="/assets/modules/popper.js"></script>
-  <script src="/assets/modules/tooltip.js"></script>
-  <script src="/assets/modules/bootstrap/js/bootstrap.min.js"></script>
-  <script src="/assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
-  <script src="/assets/modules/moment.min.js"></script>
-  <script src="/assets/js/stisla.js"></script>
+  <!--end::jQuery-->
 
-  <!-- JS Libraies -->
+  <!--begin::OverlayScrollbars-->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+    crossorigin="anonymous"></script>
+  <!--end::OverlayScrollbars-->
 
-  <!-- Select2 Jquery -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <!--begin::Popper + Bootstrap 5-->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+    crossorigin="anonymous"></script>
+  <!--end::Popper + Bootstrap 5-->
 
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+  <!--begin::AdminLTE-->
+  <script src="/adminlte/js/adminlte.min.js"></script>
+  <!--end::AdminLTE-->
 
-  <!-- Page Specific JS File -->
-
-  <!-- Template JS File -->
-  <script src="/assets/js/scripts.js"></script>
-  <script src="/assets/js/custom.js"></script>
-
-  <!-- Datatables Jquery -->
-  <script type="text/javascript" src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-  <!-- Sweet Alert -->
-  @include('sweetalert::alert')
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-  <!-- Day Js Format -->
-  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-
-
-  @stack('scripts')
-
-
+  <!--begin::OverlayScrollbars Init-->
   <script>
-    $(document).ready(function() {
-      var currentPath = window.location.pathname;
-      $('.nav-link a[href="' + currentPath + '"]').addClass('active');
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+      const isMobile = window.innerWidth <= 992;
+      if (sidebarWrapper && OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined && !isMobile) {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true },
+        });
+      }
     });
   </script>
+  <!--end::OverlayScrollbars Init-->
 
-  <!-- Page Loader Script -->
+  <!--begin::Select2-->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <!--end::Select2-->
+
+  <!--begin::DataTables-->
+  <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <!--end::DataTables-->
+
+  <!--begin::SweetAlert2-->
+  @include('sweetalert::alert')
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!--end::SweetAlert2-->
+
+  <!--begin::DayJS-->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!--end::DayJS-->
+
+  <!--begin::Page Loader Script-->
   <script>
-    // Sembunyikan loader saat halaman selesai load
     window.addEventListener('load', function () {
       const loader = document.getElementById('page-loader');
       if (loader) {
         loader.classList.add('hide');
-        // Hapus dari DOM setelah animasi selesai
         setTimeout(() => loader.remove(), 450);
       }
     });
 
-    // Tampilkan loader saat klik link navigasi (bukan anchor, bukan target blank)
     document.addEventListener('click', function (e) {
       const link = e.target.closest('a');
       if (
-        link &&
-        link.href &&
+        link && link.href &&
         !link.href.startsWith('#') &&
         !link.href.startsWith('javascript') &&
-        !link.getAttribute('href').startsWith('#') &&
         link.getAttribute('href') !== '#' &&
-        !link.hasAttribute('data-toggle') &&
+        !link.hasAttribute('data-bs-toggle') &&
+        !link.hasAttribute('data-lte-toggle') &&
         link.target !== '_blank' &&
         !e.ctrlKey && !e.metaKey &&
         link.hostname === window.location.hostname
@@ -771,10 +695,8 @@
           <div id="page-loader-inner">
             <dotlottie-player
               src="https://lottie.host/1fbb029c-6a9b-456d-affe-2619a4a245cf/OYMAUYue59.lottie"
-              background="transparent"
-              speed="1"
-              style="width:180px;height:180px;"
-              autoplay loop>
+              background="transparent" speed="1"
+              style="width:180px;height:180px;" autoplay loop>
             </dotlottie-player>
             <p id="page-loader-text">Memuat...</p>
           </div>`;
@@ -782,9 +704,11 @@
       }
     });
   </script>
+  <!--end::Page Loader Script-->
 
+  @stack('scripts')
+
+  <!--end::Scripts-->
 </body>
+<!--end::Body-->
 </html>
-
-
-

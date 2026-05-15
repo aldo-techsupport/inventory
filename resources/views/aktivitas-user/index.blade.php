@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Aktivitas User')
+
 @include('hak-akses.create')
 {{-- @include('data-pengguna.edit') --}}
 

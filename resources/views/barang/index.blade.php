@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Data Barang')
+
 @include('barang.create')
 @include('barang.edit')
 @include('barang.show')

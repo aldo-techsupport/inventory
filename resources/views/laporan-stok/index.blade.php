@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Laporan Stok')
+
 @section('content')
 
 <div class="section-header">
