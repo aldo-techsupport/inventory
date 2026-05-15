@@ -61,7 +61,7 @@
 
     <div class="footer">
         Dicetak oleh: {{ auth()->user()->name }}<br>
-        Tanggal: {{ date('d-m-Y') }}
+        Tanggal: {{ now()->timezone('Asia/Jakarta')->format('d-m-Y H:i') }} WIB
     </div>
 </body>
 </html>

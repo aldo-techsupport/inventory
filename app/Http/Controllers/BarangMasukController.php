@@ -59,7 +59,7 @@ class BarangMasukController extends Controller
 
             // Generate kode unik di server — pastikan tidak duplikat
             do {
-                $kode = 'TRX-IN-' . now()->format('Y-m-d') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                $kode = 'TRX-IN-' . now()->timezone('Asia/Jakarta')->format('Y-m-d') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
             } while (BarangMasuk::where('kode_transaksi', $kode)->exists());
 
             $barangMasuk = BarangMasuk::create([

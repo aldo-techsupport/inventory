@@ -254,7 +254,7 @@ body {
 
 <!-- FOOTER -->
 <div class="footer">
-    Dicetak pada {{ now()->format('d M Y H:i') }}
+    Dicetak pada {{ now()->timezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
 </div>
 
 </body>

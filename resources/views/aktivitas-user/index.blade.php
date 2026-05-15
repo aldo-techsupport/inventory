@@ -75,7 +75,7 @@
                                     @endif
                                 </td>
                                 <td class="activity-desc">{{ $log->description }}</td>
-                                <td style="white-space: nowrap;">{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
+                                <td style="white-space: nowrap;">{{ $log->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i:s') }} WIB</td>
                             </tr>
                             @endforeach                        
                         </tbody>
