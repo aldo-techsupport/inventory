@@ -261,21 +261,7 @@
                 <a href="/ubah-password" class="btn btn-outline-secondary btn-sm">
                   <i class="bi bi-lock me-1"></i> Ubah Password
                 </a>
-                <a href="{{ route('logout') }}" class="btn btn-outline-danger btn-sm float-end"
-                  onclick="event.preventDefault();
-                    Swal.fire({
-                      title: 'Konfirmasi Keluar',
-                      text: 'Apakah Anda yakin ingin keluar?',
-                      icon: 'warning',
-                      showCancelButton: true,
-                      confirmButtonColor: '#0d6efd',
-                      cancelButtonColor: '#d33',
-                      confirmButtonText: 'Ya, Keluar!'
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        document.getElementById('logout-form').submit();
-                      }
-                    });">
+                <a href="#" class="btn btn-outline-danger btn-sm float-end" id="btn-logout">
                   <i class="bi bi-box-arrow-right me-1"></i> Keluar
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -668,6 +654,7 @@
 
   <!--begin::Page Loader Script-->
   <script>
+    // Sembunyikan loader saat halaman selesai load
     window.addEventListener('load', function () {
       const loader = document.getElementById('page-loader');
       if (loader) {
@@ -676,10 +663,12 @@
       }
     });
 
+    // Tampilkan loader saat navigasi — kecuali href="#" atau tombol logout
     document.addEventListener('click', function (e) {
       const link = e.target.closest('a');
       if (
         link && link.href &&
+        link.id !== 'btn-logout' &&
         !link.href.startsWith('#') &&
         !link.href.startsWith('javascript') &&
         link.getAttribute('href') !== '#' &&
@@ -701,6 +690,30 @@
             <p id="page-loader-text">Memuat...</p>
           </div>`;
         document.body.appendChild(loader);
+      }
+    });
+
+    // Tombol logout — SweetAlert konfirmasi dulu, baru submit form
+    document.addEventListener('DOMContentLoaded', function () {
+      const btnLogout = document.getElementById('btn-logout');
+      if (btnLogout) {
+        btnLogout.addEventListener('click', function (e) {
+          e.preventDefault();
+          Swal.fire({
+            title: 'Konfirmasi Keluar',
+            text: 'Apakah Anda yakin ingin keluar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Keluar!',
+            cancelButtonText: 'Batal'
+          }).then(function (result) {
+            if (result.isConfirmed) {
+              document.getElementById('logout-form').submit();
+            }
+          });
+        });
       }
     });
   </script>
